@@ -8,3 +8,6 @@ img/old/
 
 # test code
 test/
+
+# ide files
+.idea/
