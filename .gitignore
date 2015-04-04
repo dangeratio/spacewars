@@ -1,0 +1,10 @@
+# misc files
+*.psd
+*.ai
+*.pyc
+
+# old stuff
+img/old/
+
+# test code
+test/
