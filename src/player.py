@@ -1,6 +1,7 @@
 from math import sqrt
 from configfile import ConfigFile
 from planet import *
+from ship import *
 
 
 conf = ConfigFile()
@@ -18,16 +19,61 @@ class Player(object):
         self.new_loc = 0
         self.failed_to_find = 0
         self.owned_planets = []
+        self.home_planet_name = 0
+        self.selected_planet = 0
+        self.selected_ship = 0
+
+
 
         if conf.debug == 1:
             print "Created Player: [ name:", name, "]"
 
+    def generate_ship_at_planet(self, planet):
+
+        checking_name = True
+        while checking_name:
+            valid_name = True
+            name = generate_ship_name()
+            for ship in self.ships:
+                if ship.name == name:
+                    valid_name = False
+            if valid_name:
+                checking_name = False
+
+        new_ship = GenerateShip(name, planet)
+        self.ships.append(new_ship)
+
+    def generate_initial_ship(self, initial_planet_name):
+
+        # valid_name = False
+        # while not valid_name:
+        #     name = generate_ship_name()
+        #     valid_name = self.check_ship_name(valid_name)
+
+        name = generate_ship_name()
+        new_ship = InitialShip(name, initial_planet_name)
+        self.ships.append(new_ship)
+
+    def generate_initial_planet(self):
+
+        new_planet = InitialPlanet()
+        self.planets.append(new_planet)
+        new_planet_id = len(self.planets)-1
+        self.owned_planets.append(new_planet_id)      # initial planet's id
+        self.home_planet_name = self.planets[0].name
+        self.selected_planet = self.planets[0]
+
     def generate_new_planet(self):
 
-        valid_name = False
-        while not valid_name:
+        checking_name = True
+        while checking_name:
+            valid_name = True
             name = generate_planet_name()
-            valid_name = self.check_name(valid_name)
+            for planet in self.planets:
+                if planet.name == name:
+                    valid_name = False
+            if valid_name:
+                checking_name = False
 
         valid_loc = False
         attempts = 0
@@ -56,7 +102,7 @@ class Player(object):
                 self.new_loc += 1
         return return_val
 
-    def check_name(self, name):
+    def check_planet_name(self, name):
         return_val = True
         for planet in self.planets:
             if name == planet.name:
@@ -65,11 +111,19 @@ class Player(object):
                     print "PlanetGen: Need New Name"
         return return_val
 
+    def check_ship_name(self, name):
+        return_val = True
+        for ship in self.ships:
+            if name == ship.name:
+                return_val = False
+                if conf.debug == 1:
+                    print "ShipGen: Need New Name"
+        return return_val
+
 
 class InitialPlayer(Player):
-    def __init__(self, initial_planet, initial_ship):
-        super(InitialPlayer, self).__init__("User", 1000000, [initial_planet], [initial_ship], [], [])
-        self.owned_planets = [0]      # initial planet's id
+    def __init__(self):
+        super(InitialPlayer, self).__init__("User", 1000000, [], [], [], [])
 
 
 def check_intersect(loc1, loc2):
@@ -92,8 +146,8 @@ def get_distance(loc1, loc2):
 
 
 def generate_planet_name():
-
-    # need to add a check against existing planet names, so as not to duplicate
-    # currently the planet names have a chance to duplicate
-
     return data.planet_names[random.randint(0, len(data.planet_names)-1)]
+
+
+def generate_ship_name():
+    return data.ship_names[random.randint(0, len(data.ship_names)-1)]

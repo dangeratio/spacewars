@@ -8,7 +8,7 @@ data = DataFile()
 
 
 class Planet(object):
-    def __init__(self, name, population, metals, food, terrain, loc):
+    def __init__(self, name, population, metals, food, terrain, loc, owned):
 
         self.population = population
         self.metals = metals
@@ -16,6 +16,7 @@ class Planet(object):
         self.terrain = terrain
         self.loc = loc
         self.name = name
+        self.owned = owned
 
         if conf.debug == 1:
             print "Created Planet: [ x:", self.loc.x, ", y:", self.loc.y, ", pop:", self.population, \
@@ -25,7 +26,7 @@ class Planet(object):
 class GeneratePlanet(Planet):
     def __init__(self, name, loc):
         super(GeneratePlanet, self).__init__(name, 0, generate_metals(),
-                                             generate_food(), generate_terrain(), loc)
+                                             generate_food(), generate_terrain(), loc, 'none')
 
 
 class Location(object):
@@ -50,7 +51,7 @@ class InitialPlanet(Planet):
     def __init__(self):
         loc = Location(0, 0, initial_planet_size(), 0)
         super(InitialPlanet, self).__init__(generate_planet_name(), initial_population()
-                                            , initial_metals(), initial_food(), initial_terrain(), loc)
+                                            , initial_metals(), initial_food(), initial_terrain(), loc, 'player')
 
 
 def initial_population():

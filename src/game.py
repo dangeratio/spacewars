@@ -22,16 +22,9 @@ selected_ship = ""
 
 # planet images
 planet_images = []
-'''
-ice_planet_image_path = "../img/ice_planet.gif"
-rock_planet_image_path = "../img/rock_planet.gif"
-green_planet_image_path = "../img/green_planet.gif"
-water_planet_image_path = "../img/water_planet.gif"
-alien_planet_image_path = "../img/alien_planet.gif"
-'''
 
-
-# error counters
+# init action scheduler
+pending_actions = []
 
 '''
 active_view variable controls what view is displayed.  These are the values:
@@ -40,6 +33,7 @@ active_view variable controls what view is displayed.  These are the values:
 '''
 active_view = "intro"
 
+main_canvas_has_been_created = False
 
 class MainWindow(Frame):
 
@@ -97,10 +91,9 @@ def click(event):
 
 
 def resize(event):
-    # Debug
-    # print "resize to", event.width, event.height
 
-    global main_window, active_view
+    global main_window
+    global active_view
 
     main_window.sw = event.width
     main_window.sh = event.height
@@ -118,13 +111,18 @@ def resize(event):
         draw_intro_nav()
     elif active_view == "main":
         build_main_nav()
+        # redraw_planet_view()
 
 
 def main():
-    # build_variables()
     init_intro_nav()
     draw_intro_nav()
-    # build_menus()
+
+    # if len(pending_actions) > 0:
+    #     for action in pending_actions:
+    #         if action == 'invoke_new_game':
+    #             button_new_game.invoke()
+
     root.mainloop()
 
 '''
@@ -233,7 +231,7 @@ def draw_intro_nav():
     #
     ######################################################
     '''
-    button_new_game.invoke()
+    pending_actions.append('invoke_new_game')
 
 
 def quitting():
@@ -242,7 +240,34 @@ def quitting():
 
 
 def event_button_new_game():
-    initiate_new_game()
+
+    global active_view
+
+    hide_intro_nav()
+    active_view = "main"
+
+    global player, selected_planet, game
+
+    # initial_planet = InitialPlanet()
+    # initial_ship = InitialShip(initial_planet)
+    # player = InitialPlayer(initial_planet, initial_ship)
+
+    player = InitialPlayer()
+    player.generate_initial_planet()
+    player.generate_initial_ship(player.home_planet_name)
+
+    for i in range(conf.planets_to_generate):
+        player.generate_new_planet()
+    game = Game(player)
+
+    selected_planet = player.planets[0]
+
+    active_view = "main"
+    build_main_nav()
+    # build_map()
+    # build_left_nav_menu()
+    # build_bottom_nav_menu()
+
 
 
 def event_button_load_game():
@@ -262,36 +287,9 @@ class Game(object):
         self.player = player
 
 
-def initiate_new_game():
-
-    global active_view
-
-    hide_intro_nav()
-    active_view = "main"
-
-    global player, selected_planet, game
-
-    initial_planet = InitialPlanet()
-    initial_ship = InitialShip(initial_planet)
-    player = InitialPlayer(initial_planet, initial_ship)
-    for i in range(conf.planets_to_generate):
-        player.generate_new_planet()
-        # new_planet = GeneratePlanet(conf.max_distance)
-        # player.planets.append(new_planet)
-    game = Game(player)
-
-    selected_planet = initial_planet
-
-    active_view = "main"
-    build_main_nav()
-    # build_map()
-    # build_left_nav_menu()
-    # build_bottom_nav_menu()
-
-
 def build_main_nav():
 
-    global left_nav, bottom_nav, main_nav, map_nav, navs_have_been_built
+    global left_nav, bottom_nav, main_nav, map_nav, navs_have_been_built, main_window
 
     left_nav = Frame(main_window, height=main_window.sh, width=200, background=conf.left_nav_background)
     bottom_nav = Frame(main_window, height=200, width=(main_window.sw-200), background=conf.bottom_nav_background)
@@ -302,8 +300,13 @@ def build_main_nav():
     # build_map()
 
     if navs_have_been_built:
+        if conf.debug == 1:
+            print "Redrawing..."
         left.redraw(main_window, player)
+        redraw_planet_view()
     else:
+        if conf.debug == 1:
+            print "Drawing..."
         build_planet_view()
         build_left_nav_menu()
         navs_have_been_built = True
@@ -315,7 +318,7 @@ def build_left_nav_menu():
 
     left_nav.place(x=0, y=0)
 
-    left = LeftNav(main_window, player, left_nav, selected_planet, selected_ship)
+    left = LeftNav(main_window, player, left_nav)
 
 
 '''
@@ -482,6 +485,8 @@ def build_map():
 
 def build_planet_view():
 
+    global main_canvas_has_been_created
+
     if conf.debug == 1:
         print "Displayed: main_nav,", main_window.sh-200, ",", main_window.sh-200
 
@@ -489,6 +494,8 @@ def build_planet_view():
 
     main_nav.place(x=200, y=0)
     main_canvas = Canvas(main_nav)
+    main_canvas.scan_mark((main_window.sw - 200) / 2, (main_window.sh - 200) / 2)
+    main_canvas_has_been_created = True
 
     # draw corner lines
     if conf.debug_lines == 1:
@@ -525,7 +532,7 @@ def build_planet_view():
 
     finish_drawing_planets()
 
-
+'''
 def planet_filter():
     global player
     to_remove = []
@@ -548,14 +555,35 @@ def planet_filter():
 
 
 
-    '''
+
     for planet_a in player.planets:
         for planet_b in player.planets:
             if check_intersect(planet_a.loc, planet_b.loc):
                 player.planets.remove(planet_b)
                 if conf.debug == 1:
                     print "Removed Planet"
-    '''
+
+'''
+
+
+def redraw_planet_view():
+
+    global main_window
+
+    if main_canvas_has_been_created:
+
+        global main_canvas
+        main_canvas.config(width=main_window.sw-200, height=main_window.sh-200)
+        main_canvas.scan_dragto((main_window.sw - 200) / 2, (main_window.sh - 200) / 2)
+        finish_drawing_planets()
+        if conf.debug == 1:
+            print "Redraw:AlreadyCreated"
+
+    else:
+
+        build_planet_view()
+        if conf.debug == 1:
+            print "Redraw:New"
 
 
 def add_unique(array, item):
@@ -630,28 +658,35 @@ def get_terrain_image(terrain):
 
 
 def convert_coords_x(x):
+    global main_window
     return ((main_window.sw - 200) / 2) + x
 
 
 def convert_coords_y(y):
+    global main_window
     return ((main_window.sh - 200) / 2) + y
 
 
 def convert_coords_name(y, size):
+    global main_window
     return ((main_window.sh - 200) / 2) + y - (size / 2) - conf.planet_name_height
 
 
 def finish_drawing_planets():
+
+    global main_canvas, main_window
+
     main_canvas.pack(fill='both')
     if conf.debug == 1:
-        print "PlanetGen: NewLoc:", player.new_loc
-        print "PlanetGen: Failed:", player.failed_to_find
+        # print "Drawing: NewLoc:", player.new_loc
+        # print "Drawing: Failed:", player.failed_to_find
         print "WindowSize:", main_window.sw, ":", main_window.sh
-        print "Total planets:", len(player.planets)
+        print "PlanetsDrawn:", len(player.planets)
 
 
 def draw_planet(planet):
-    global main_nav, main_canvas, label, planet_images
+
+    global main_nav, main_canvas, label, planet_images, main_window
 
     new_x = convert_coords_x(planet.loc.x)
     new_y = convert_coords_y(planet.loc.y)
@@ -670,7 +705,8 @@ def draw_planet(planet):
     label.planet_image_res = planet_image_res           # keep a reference!
     label.place(anchor=CENTER, x=new_x, y=new_y)
 
-    label_name = Label(main_canvas, text=planet.name, fg=conf.main_text_color, bg='black', borderwidth=1, highlightthickness=0)
+    label_name = Label(main_canvas, text=planet.name, fg=conf.main_text_color, bg='black', borderwidth=1
+                       , highlightthickness=0)
     label_name.place(anchor=CENTER, x=new_x, y=name_y)
 
     if conf.debug == 1:
@@ -678,7 +714,8 @@ def draw_planet(planet):
 
 
 def draw_planet_highlighted(planet):
-    global main_nav, main_canvas, label, planet_images
+
+    global main_nav, main_canvas, label, planet_images, main_window
 
     new_x = convert_coords_x(planet.loc.x)
     new_y = convert_coords_y(planet.loc.y)
@@ -696,7 +733,8 @@ def draw_planet_highlighted(planet):
     label_planet.planet_image_res = planet_image_res           # keep a reference!
     label_planet.place(anchor=CENTER, x=new_x, y=new_y)
 
-    label_name = Label(main_canvas, text=planet.name, fg='red', bg='black', borderwidth=1, highlightthickness=0)
+    label_name = Label(main_canvas, text=planet.name, fg='red', bg='black', borderwidth=1
+                       , highlightthickness=0)
     label_name.place(anchor=CENTER, x=new_x, y=name_y)
 
     if conf.debug == 1:

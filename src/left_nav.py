@@ -1,5 +1,5 @@
 from configfile import *
-from Tkinter import Tk, Frame, Label, Button, Canvas, CENTER, CURRENT
+from Tkinter import Tk, Frame, Label, Button, Canvas, CENTER, CURRENT, Listbox, END
 from PIL import Image, ImageTk, ImageDraw
 from popup import *
 
@@ -9,8 +9,16 @@ conf = ConfigFile()
 
 class LeftNav(Canvas):
 
-    def __init__(self, main_window, player, left_nav, selected_planet, selected_ship):
+    def __init__(self, main_window, player_, left_nav):
 
+        self.selected_planet = player_.selected_planet
+        if isset(player_.selected_ship):
+            self.selected_ship_name = player_.selected_ship.name
+        else:
+            self.selected_ship_name = ""
+
+        self.player = player_
+        self.main_window = main_window
         self.parent = left_nav
 
         self.planet_images = []
@@ -53,7 +61,7 @@ class LeftNav(Canvas):
         self.label_planets = Label(self.resources_canvas, text="Planets:", fg=conf.second_text_color)
         self.label_planets.config(background=conf.left_nav_background)
         self.label_planets.grid(row=row, column=0, sticky='w')
-        self.label_planets_val = Label(self.resources_canvas, text=str(len(player.owned_planets))
+        self.label_planets_val = Label(self.resources_canvas, text=str(len(self.player.owned_planets))
                                        , fg=conf.second_text_color)
         self.label_planets_val.config(background=conf.left_nav_background)
         self.label_planets_val.grid(row=row, column=1, sticky='e')
@@ -61,21 +69,21 @@ class LeftNav(Canvas):
         self.label_ships = Label(self.resources_canvas, text="Ships:", fg=conf.second_text_color)
         self.label_ships.config(background=conf.left_nav_background)
         self.label_ships.grid(row=row, column=0, sticky='w')
-        self.label_ships_val = Label(self.resources_canvas, text=len(player.ships), fg=conf.second_text_color)
+        self.label_ships_val = Label(self.resources_canvas, text=len(self.player.ships), fg=conf.second_text_color)
         self.label_ships_val.config(background=conf.left_nav_background)
         self.label_ships_val.grid(row=row, column=1, sticky='e')
         row += 1
         self.label_allies = Label(self.resources_canvas, text="Allies:", fg=conf.second_text_color)
         self.label_allies.config(background=conf.left_nav_background)
         self.label_allies.grid(row=row, column=0, sticky='w')
-        self.label_allies_val = Label(self.resources_canvas, text=len(player.allies), fg=conf.second_text_color)
+        self.label_allies_val = Label(self.resources_canvas, text=len(self.player.allies), fg=conf.second_text_color)
         self.label_allies_val.config(background=conf.left_nav_background)
         self.label_allies_val.grid(row=row, column=1, sticky='e')
         row += 1
         self.label_enemies = Label(self.resources_canvas, text="Enemies:", fg=conf.second_text_color)
         self.label_enemies.config(background=conf.left_nav_background)
         self.label_enemies.grid(row=row, column=0, sticky='w')
-        self.label_enemies_val = Label(self.resources_canvas, text=len(player.enemies), fg=conf.second_text_color)
+        self.label_enemies_val = Label(self.resources_canvas, text=len(self.player.enemies), fg=conf.second_text_color)
         self.label_enemies_val.config(background=conf.left_nav_background)
         self.label_enemies_val.grid(row=row, column=1, sticky='e')
         row += 1
@@ -85,6 +93,9 @@ class LeftNav(Canvas):
 
         # left nav buttons
         self.left_buttons_start_y = main_window.sh-112
+        if self.left_buttons_start_y < 500:
+            self.left_buttons_start_y = 500
+
         self.left_buttons_canvas = Canvas(self.left_canvas)
         self.left_buttons_canvas.config(background=conf.left_nav_background,
                                         height=200,
@@ -111,6 +122,7 @@ class LeftNav(Canvas):
         self.button_end_turn.grid(row=3, column=0, sticky='w,e')
 
         # Planet Info Set
+
         row = 0
         self.planet_info_start_y = self.resources_start_y + 115
         self.planet_info_canvas = Canvas(self.left_canvas)
@@ -127,28 +139,32 @@ class LeftNav(Canvas):
         self.label_planet_name = Label(self.planet_info_canvas, text="Name:", fg=conf.second_text_color)
         self.label_planet_name.config(background=conf.left_nav_background)
         self.label_planet_name.grid(row=row, column=0, sticky='w')
-        self.label_planet_name_val = Label(self.planet_info_canvas, text=selected_planet.name, fg=conf.second_text_color)
+        self.label_planet_name_val = Label(self.planet_info_canvas, text=self.player.selected_planet.name
+                                           , fg=conf.second_text_color)
         self.label_planet_name_val.config(background=conf.left_nav_background)
         self.label_planet_name_val.grid(row=row, column=1, sticky='e')
         row += 1
         self.label_planet_metals = Label(self.planet_info_canvas, text="Metals:", fg=conf.second_text_color)
         self.label_planet_metals.config(background=conf.left_nav_background)
         self.label_planet_metals.grid(row=row, column=0, sticky='w')
-        self.label_planet_metals_val = Label(self.planet_info_canvas, text=selected_planet.metals, fg=conf.second_text_color)
+        self.label_planet_metals_val = Label(self.planet_info_canvas, text=self.player.selected_planet.metals
+                                             , fg=conf.second_text_color)
         self.label_planet_metals_val.config(background=conf.left_nav_background)
         self.label_planet_metals_val.grid(row=row, column=1, sticky='e')
         row += 1
         self.label_planet_food = Label(self.planet_info_canvas, text="Food:", fg=conf.second_text_color)
         self.label_planet_food.config(background=conf.left_nav_background)
         self.label_planet_food.grid(row=row, column=0, sticky='w')
-        self.label_planet_food_val = Label(self.planet_info_canvas, text=selected_planet.food, fg=conf.second_text_color)
+        self.label_planet_food_val = Label(self.planet_info_canvas, text=self.player.selected_planet.food
+                                           , fg=conf.second_text_color)
         self.label_planet_food_val.config(background=conf.left_nav_background)
         self.label_planet_food_val.grid(row=row, column=1, sticky='e')
         row += 1
         self.label_planet_terrain = Label(self.planet_info_canvas, text="Terrain:", fg=conf.second_text_color)
         self.label_planet_terrain.config(background=conf.left_nav_background)
         self.label_planet_terrain.grid(row=row, column=0, sticky='w')
-        self.label_planet_terrain_val = Label(self.planet_info_canvas, text=get_terrain(selected_planet.terrain), fg=conf.second_text_color)
+        self.label_planet_terrain_val = Label(self.planet_info_canvas, text=get_terrain(self.player.selected_planet.terrain)
+                                              , fg=conf.second_text_color)
         self.label_planet_terrain_val.config(background=conf.left_nav_background)
         self.label_planet_terrain_val.grid(row=row, column=1, sticky='e')
 
@@ -167,19 +183,15 @@ class LeftNav(Canvas):
         self.label_ship_info.config(background=conf.left_nav_background)
         self.label_ship_info.grid(row=row, column=0, sticky='w')
 
-
-
-
-
         # future implementation
 
-        #if selected_ship.name != '':
-        if selected_ship != '':
+        # if selected_ship.name != '':
+        if isset(self.player.selected_ship) != '' and self.player.selected_ship != 0:
             row += 1
             self.label_ship_name = Label(self.ship_info_canvas, text="Name:", fg=conf.second_text_color)
             self.label_ship_name.config(background=conf.left_nav_background)
             self.label_ship_name.grid(row=row, column=0, sticky='w')
-            self.label_ship_name_val = Label(self.planet_info_canvas, text=selected_ship.name, fg=conf.second_text_color)
+            self.label_ship_name_val = Label(self.planet_info_canvas, text=self.player.selected_ship.name, fg=conf.second_text_color)
             self.label_ship_name_val.config(background=conf.left_nav_background)
             self.label_ship_name_val.grid(row=row, column=1, sticky='e')
         else:
@@ -187,6 +199,14 @@ class LeftNav(Canvas):
             self.label_ship_name = Label(self.ship_info_canvas, text="No Ship Selected", fg=conf.second_text_color)
             self.label_ship_name.config(background=conf.left_nav_background)
             self.label_ship_name.grid(row=row, columnspan=2, sticky='w')
+            row += 1
+            self.listbox_ship = Listbox(self.ship_info_canvas)
+            for ship in self.player.ships:
+                self.listbox_ship.insert(END, ship.name)
+            self.listbox_ship.after(250, self.poll_ship_list)
+
+
+
 
 
 
@@ -207,7 +227,22 @@ class LeftNav(Canvas):
         if conf.debug == 1:
             print "Displayed: left_nav,", main_window.sh, ",200"
 
+    def poll_ship_list(self):
+        new_ship_name = self.listbox_ship.curselection()
+        if isset(self.selected_ship_name):
+            if self.selected_ship_name == "":
+                if new_ship_name != self.selected_ship_name:
+                    self.ship_selction_has_changed(new_ship_name)
+                    self.selected_ship_name = new_ship_name
+        self.main_window.after(250, self.poll_ship_list)
+
+    def ship_selction_has_changed(self, new_ship_name):
+        print "ShipSelection:", new_ship_name
+
     def redraw(self, main_window, player):
+
+        self.player = player
+
 
         if conf.debug == 1:
             print "Redrawing Left Nav"
@@ -223,30 +258,37 @@ class LeftNav(Canvas):
         self.label_resources.grid(row=row, column=0, sticky='w')
         row += 1
         self.label_planets.grid(row=row, column=0, sticky='w')
-        self.label_planets_val.config(text=str(len(player.owned_planets)))
+        self.label_planets_val.config(text=str(len(self.player.owned_planets)))
         self.label_planets_val.grid(row=row, column=1, sticky='e')
         row += 1
         self.label_ships.grid(row=row, column=0, sticky='w')
-        self.label_ships_val.config(text=len(player.ships))
+        self.label_ships_val.config(text=len(self.player.ships))
         self.label_ships_val.grid(row=row, column=1, sticky='e')
         row += 1
         self.label_allies.grid(row=row, column=0, sticky='w')
-        self.label_allies_val.config(text=len(player.allies))
+        self.label_allies_val.config(text=len(self.player.allies))
         self.label_allies_val.grid(row=row, column=1, sticky='e')
         row += 1
         self.label_enemies.grid(row=row, column=0, sticky='w')
-        self.label_enemies_val.config(text=len(player.enemies))
+        self.label_enemies_val.config(text=len(self.player.enemies))
         self.label_enemies_val.grid(row=row, column=1, sticky='e')
         row += 1
         self.label_separator.grid(row=row, columnspan=2, sticky='e,w')
 
         # left nav buttons
 
+        self.left_buttons_start_y = main_window.sh-112
+        if self.left_buttons_start_y < 500:
+            self.left_buttons_start_y = 500
         self.left_buttons_canvas.place(anchor='n', x=100, y=self.left_buttons_start_y)
         self.button_next_planet.grid(row=0, column=0, sticky='w,e')
         self.button_next_ship.grid(row=1, column=0, sticky='w,e')
         self.button_home_planet.grid(row=2, column=0, sticky='w,e')
         self.button_end_turn.grid(row=3, column=0, sticky='w,e')
+
+        if conf.debug == 1:
+            print "Left Buttons Start Y:", self.left_buttons_start_y
+
 
 
 def convert_coords_x(main_window, x):
@@ -305,3 +347,7 @@ def get_terrain(terrain):
         return 'Alien'
     else:
         return 'Black'
+
+
+def isset(variable):
+    return variable in locals() or variable in globals()
