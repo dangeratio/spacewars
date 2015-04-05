@@ -92,4 +92,8 @@ def get_distance(loc1, loc2):
 
 
 def generate_planet_name():
+
+    # need to add a check against existing planet names, so as not to duplicate
+    # currently the planet names have a chance to duplicate
+
     return data.planet_names[random.randint(0, len(data.planet_names)-1)]

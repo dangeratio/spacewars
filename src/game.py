@@ -12,21 +12,7 @@ from left_nav import *
 conf = ConfigFile()
 conf.print_debug()
 
-
 # colors and intro
-'''
-_conf.window_background = "#071722"
-__conf.window_background = "#162026"
-___conf.window_background = "#5B585A"
-conf.window_background = "black"
-conf.main_background = "#5B585A"
-conf.black_color = "#000000"
-conf.left_nav_background = "#5E677A"
-_conf.intro_background = "#5E677A"
-conf.intro_background = "#5B585A"
-conf.bottom_nav_background = "#93AEA6"
-'''
-conf.title_image_path = "../img/title_image.jpg"
 intro_padding_height = 77.5
 navs_have_been_built = False
 
@@ -35,12 +21,15 @@ selected_planet = ""
 selected_ship = ""
 
 # planet images
+planet_images = []
+'''
 ice_planet_image_path = "../img/ice_planet.gif"
 rock_planet_image_path = "../img/rock_planet.gif"
 green_planet_image_path = "../img/green_planet.gif"
 water_planet_image_path = "../img/water_planet.gif"
 alien_planet_image_path = "../img/alien_planet.gif"
-planet_images = []
+'''
+
 
 # error counters
 
@@ -244,7 +233,7 @@ def draw_intro_nav():
     #
     ######################################################
     '''
-    # button_new_game.invoke()
+    button_new_game.invoke()
 
 
 def quitting():
@@ -313,8 +302,7 @@ def build_main_nav():
     # build_map()
 
     if navs_have_been_built:
-        print "redrawing left nav"
-        draw_left_nav_menu()
+        left.redraw(main_window, player)
     else:
         build_planet_view()
         build_left_nav_menu()
@@ -323,11 +311,11 @@ def build_main_nav():
 
 def build_left_nav_menu():
 
-    global left_nav, left_canvas
+    global left_nav, left_canvas, left
 
     left_nav.place(x=0, y=0)
 
-    left = LeftNav(main_window, player, left_nav)
+    left = LeftNav(main_window, player, left_nav, selected_planet, selected_ship)
 
 
 '''
@@ -364,52 +352,52 @@ def build_left_nav_menu():
                             border=0)
     resources_canvas.place(anchor='nw', x=0, y=resources_start_y)
 
-    label_resources = Label(resources_canvas, text="Resources:", fg='white')
+    label_resources = Label(resources_canvas, text="Resources:", fg=conf.main_text_color)
     label_resources.config(background=conf.left_nav_background)
     label_resources.grid(row=row, column=0, sticky='w')
 
     # row += 1
-    # label_credits = Label(resources_canvas, text="Credits:", fg='grey')
+    # label_credits = Label(resources_canvas, text="Credits:", fg=conf.second_text_color)
     # label_credits.config(background=conf.left_nav_background)
     # label_credits.grid(row=row, column=0, sticky='w')
 
-    # label_credits_val = Label(resources_canvas, text=player.credits, fg='grey')
+    # label_credits_val = Label(resources_canvas, text=player.credits, fg=conf.second_text_color)
     # label_credits_val.config(background=conf.left_nav_background)
     # label_credits_val.grid(row=row, column=1, sticky='e')
 
     row += 1
-    label_planets = Label(resources_canvas, text="Planets:", fg='grey')
+    label_planets = Label(resources_canvas, text="Planets:", fg=conf.second_text_color)
     label_planets.config(background=conf.left_nav_background)
     label_planets.grid(row=row, column=0, sticky='w')
 
-    label_planets_val = Label(resources_canvas, text=str(len(player.owned_planets)), fg='grey')
+    label_planets_val = Label(resources_canvas, text=str(len(player.owned_planets)), fg=conf.second_text_color)
     label_planets_val.config(background=conf.left_nav_background)
     label_planets_val.grid(row=row, column=1, sticky='e')
 
     row += 1
-    label_ships = Label(resources_canvas, text="Ships:", fg='grey')
+    label_ships = Label(resources_canvas, text="Ships:", fg=conf.second_text_color)
     label_ships.config(background=conf.left_nav_background)
     label_ships.grid(row=row, column=0, sticky='w')
 
-    label_ships_val = Label(resources_canvas, text=len(player.ships), fg='grey')
+    label_ships_val = Label(resources_canvas, text=len(player.ships), fg=conf.second_text_color)
     label_ships_val.config(background=conf.left_nav_background)
     label_ships_val.grid(row=row, column=1, sticky='e')
 
     row += 1
-    label_allies = Label(resources_canvas, text="Allies:", fg='grey')
+    label_allies = Label(resources_canvas, text="Allies:", fg=conf.second_text_color)
     label_allies.config(background=conf.left_nav_background)
     label_allies.grid(row=row, column=0, sticky='w')
 
-    label_allies_val = Label(resources_canvas, text=len(player.allies), fg='grey')
+    label_allies_val = Label(resources_canvas, text=len(player.allies), fg=conf.second_text_color)
     label_allies_val.config(background=conf.left_nav_background)
     label_allies_val.grid(row=row, column=1, sticky='e')
 
     row += 1
-    label_enemies = Label(resources_canvas, text="Enemies:", fg='grey')
+    label_enemies = Label(resources_canvas, text="Enemies:", fg=conf.second_text_color)
     label_enemies.config(background=conf.left_nav_background)
     label_enemies.grid(row=row, column=0, sticky='w')
 
-    label_enemies_val = Label(resources_canvas, text=len(player.enemies), fg='grey')
+    label_enemies_val = Label(resources_canvas, text=len(player.enemies), fg=conf.second_text_color)
     label_enemies_val.config(background=conf.left_nav_background)
     label_enemies_val.grid(row=row, column=1, sticky='e')
 
@@ -628,17 +616,17 @@ def get_terrain_image(terrain):
     # 5 Alien
 
     if terrain == 1:
-        return ice_planet_image_path
+        return conf.ice_planet_image_path
     elif terrain == 2:
-        return rock_planet_image_path
+        return conf.rock_planet_image_path
     elif terrain == 3:
-        return green_planet_image_path
+        return conf.green_planet_image_path
     elif terrain == 4:
-        return water_planet_image_path
+        return conf.water_planet_image_path
     elif terrain == 5:
-        return alien_planet_image_path
+        return conf.alien_planet_image_path
     else:
-        return alien_planet_image_path
+        return conf.alien_planet_image_path
 
 
 def convert_coords_x(x):
@@ -682,7 +670,7 @@ def draw_planet(planet):
     label.planet_image_res = planet_image_res           # keep a reference!
     label.place(anchor=CENTER, x=new_x, y=new_y)
 
-    label_name = Label(main_canvas, text=planet.name, fg='white', bg='black', borderwidth=1, highlightthickness=0)
+    label_name = Label(main_canvas, text=planet.name, fg=conf.main_text_color, bg='black', borderwidth=1, highlightthickness=0)
     label_name.place(anchor=CENTER, x=new_x, y=name_y)
 
     if conf.debug == 1:
