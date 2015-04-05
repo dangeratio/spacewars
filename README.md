@@ -15,3 +15,7 @@ Planned Features
     Sound effects (boom, zap, pow, etc.)
     Renaming planets you own
     Tech tree
+
+Screenshot
+
+![screenshot of spacewars](http://i.imgur.com/8HWZqJT.png)
