@@ -17,6 +17,7 @@ class Player(object):
         self.allies = allies_list
         self.new_loc = 0
         self.failed_to_find = 0
+        self.owned_planets = []
 
         if conf.debug == 1:
             print "Created Player: [ name:", name, "]"
@@ -68,6 +69,7 @@ class Player(object):
 class InitialPlayer(Player):
     def __init__(self, initial_planet, initial_ship):
         super(InitialPlayer, self).__init__("User", 1000000, [initial_planet], [initial_ship], [], [])
+        self.owned_planets = [0]      # initial planet's id
 
 
 def check_intersect(loc1, loc2):

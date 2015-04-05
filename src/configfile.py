@@ -18,6 +18,16 @@ class ConfigFile(object):
         self.max_distance = int(parser.get('game', 'initial_planet_max_distance'))
         self.planet_name_height = int(parser.get('game', 'planet_name_height'))
 
+        self.window_background = parser.get('backgrounds', 'window_background')
+        self.main_background = parser.get('backgrounds', 'main_background')
+        self.black_color = parser.get('backgrounds', 'black_color')
+        self.left_nav_background = parser.get('backgrounds', 'left_nav_background')
+        self.intro_background = parser.get('backgrounds', 'intro_background')
+        self.bottom_nav_background = parser.get('backgrounds', 'bottom_nav_background')
+        self.title_image_path = parser.get('backgrounds', 'title_image_path')
+
+
+
     def print_debug(self):
         if self.debug:
             print "Config File Loaded [debug:", self.debug, ", version:", self.version, "]"

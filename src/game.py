@@ -6,7 +6,7 @@ from ship import *
 from planet import *
 from player import *
 from configfile import *
-
+from left_nav import *
 
 # load config file
 conf = ConfigFile()
@@ -14,18 +14,21 @@ conf.print_debug()
 
 
 # colors and intro
-_window_background = "#071722"
-__window_background = "#162026"
-___window_background = "#5B585A"
-window_background = "black"
-main_background = "#5B585A"
-black_color = "#000000"
-left_nav_background = "#5E677A"
-_intro_background = "#5E677A"
-intro_background = "#5B585A"
-bottom_nav_background = "#93AEA6"
-title_image_path = "../img/title_image.jpg"
+'''
+_conf.window_background = "#071722"
+__conf.window_background = "#162026"
+___conf.window_background = "#5B585A"
+conf.window_background = "black"
+conf.main_background = "#5B585A"
+conf.black_color = "#000000"
+conf.left_nav_background = "#5E677A"
+_conf.intro_background = "#5E677A"
+conf.intro_background = "#5B585A"
+conf.bottom_nav_background = "#93AEA6"
+'''
+conf.title_image_path = "../img/title_image.jpg"
 intro_padding_height = 77.5
+navs_have_been_built = False
 
 # initial generation variables
 selected_planet = ""
@@ -52,7 +55,7 @@ active_view = "intro"
 class MainWindow(Frame):
 
     def __init__(self, parent):
-        Frame.__init__(self, parent, background=window_background)
+        Frame.__init__(self, parent, background=conf.window_background)
 
         self.parent = parent
 
@@ -87,7 +90,7 @@ class MainWindow(Frame):
 class ContainerFrame(Frame):
 
     def __init__(self, parent):
-        Frame.__init__(self, parent, background=window_background)
+        Frame.__init__(self, parent, background=conf.window_background)
         self.parent = parent
         self.update()
 
@@ -108,7 +111,7 @@ def resize(event):
     # Debug
     # print "resize to", event.width, event.height
 
-    global main_window
+    global main_window, active_view
 
     main_window.sw = event.width
     main_window.sh = event.height
@@ -120,7 +123,7 @@ def resize(event):
         main_window.sh = 500
 
     if conf.debug == 1:
-        print "(", main_window.sw, ",", main_window.sh, ")"
+        print "(", main_window.sw, ",", main_window.sh, ",", active_view, ")"
 
     if active_view == "intro":
         draw_intro_nav()
@@ -174,34 +177,34 @@ def init_intro_nav():
 
     # frame setup
 
-    background_frame = Frame(main_window, height=main_window.sh, width=main_window.sw, background=window_background)
-    intro_nav = Frame(background_frame, height=500, width=500, background=intro_background)
+    background_frame = Frame(main_window, height=main_window.sh, width=main_window.sw, background=conf.window_background)
+    intro_nav = Frame(background_frame, height=500, width=500, background=conf.intro_background)
 
     # elements
 
     intro_top_padding = Canvas(intro_nav)
-    intro_top_padding.configure(height=intro_padding_height, background=intro_background, highlightbackground=intro_background)
+    intro_top_padding.configure(height=intro_padding_height, background=conf.intro_background, highlightbackground=conf.intro_background)
 
-    title_image_resource = Image.open(title_image_path)
+    title_image_resource = Image.open(conf.title_image_path)
     title_image_res = ImageTk.PhotoImage(title_image_resource)
-    can = Canvas(intro_nav, background=intro_background, highlightbackground=intro_background)
+    can = Canvas(intro_nav, background=conf.intro_background, highlightbackground=conf.intro_background)
     can.title_image_res = title_image_res
     can.config(width=title_image_res.width(), height=title_image_res.height())
 
-    button_new_game = Button(intro_nav, text="New Game", command=event_button_new_game, bg=intro_background)
-    button_new_game.config(highlightbackground=intro_background)
+    button_new_game = Button(intro_nav, text="New Game", command=event_button_new_game, bg=conf.intro_background)
+    button_new_game.config(highlightbackground=conf.intro_background)
 
-    button_load_game = Button(intro_nav, text="Load Game", command=event_button_load_game, bg=intro_background)
-    button_load_game.config(highlightbackground=intro_background)
+    button_load_game = Button(intro_nav, text="Load Game", command=event_button_load_game, bg=conf.intro_background)
+    button_load_game.config(highlightbackground=conf.intro_background)
     button_load_game.config(state='disabled')
 
-    button_quit = Button(intro_nav, text="Quit", command=event_button_quit, bg=intro_background)
-    button_quit.config(highlightbackground=intro_background)
+    button_quit = Button(intro_nav, text="Quit", command=event_button_quit, bg=conf.intro_background)
+    button_quit.config(highlightbackground=conf.intro_background)
 
-    label_version = Label(intro_nav, bg=intro_background, text=conf.version)
+    label_version = Label(intro_nav, bg=conf.intro_background, text=conf.version)
 
     intro_btm_padding = Canvas(intro_nav)
-    intro_btm_padding.configure(height=intro_padding_height, background=intro_background, highlightbackground=intro_background)
+    intro_btm_padding.configure(height=intro_padding_height, background=conf.intro_background, highlightbackground=conf.intro_background)
 
 
 def draw_intro_nav():
@@ -211,7 +214,7 @@ def draw_intro_nav():
     if conf.debug == 1:
         pass
         # canvas = Canvas(background_frame)
-        # canvas.create_line((0, 0, main_window.sw, main_window.sh), fill=black_color)
+        # canvas.create_line((0, 0, main_window.sw, main_window.sh), fill=conf.black_color)
         # canvas.pack()
 
     intro_top_padding.pack()
@@ -241,7 +244,7 @@ def draw_intro_nav():
     #
     ######################################################
     '''
-    button_new_game.invoke()
+    # button_new_game.invoke()
 
 
 def quitting():
@@ -272,7 +275,10 @@ class Game(object):
 
 def initiate_new_game():
 
+    global active_view
+
     hide_intro_nav()
+    active_view = "main"
 
     global player, selected_planet, game
 
@@ -296,34 +302,37 @@ def initiate_new_game():
 
 def build_main_nav():
 
-    global left_nav, bottom_nav, main_nav, map_nav
+    global left_nav, bottom_nav, main_nav, map_nav, navs_have_been_built
 
-    left_nav = Frame(main_window, height=main_window.sh, width=200, background=left_nav_background)
-
-    bottom_nav = Frame(main_window, height=200, width=(main_window.sw-200), background=bottom_nav_background)
-
+    left_nav = Frame(main_window, height=main_window.sh, width=200, background=conf.left_nav_background)
+    bottom_nav = Frame(main_window, height=200, width=(main_window.sw-200), background=conf.bottom_nav_background)
     main_nav = Frame(main_window, height=main_window.sh-200, width=main_window.sw-200, background='black')
-
-    map_nav = Frame(main_window, height=200, width=200, background=left_nav_background)
-
-    # label1 = Label(self, text='test')
-    # label1.place(x=0, y=0)
-
-    # button
-    # zer = Button(self, text="0")
+    map_nav = Frame(main_window, height=200, width=200, background=conf.left_nav_background)
 
     # build_bottom_nav_menu()
     # build_map()
-    build_planet_view()
-    build_left_nav_menu()
+
+    if navs_have_been_built:
+        print "redrawing left nav"
+        draw_left_nav_menu()
+    else:
+        build_planet_view()
+        build_left_nav_menu()
+        navs_have_been_built = True
 
 
 def build_left_nav_menu():
 
-    global left_nav
+    global left_nav, left_canvas
+
     left_nav.place(x=0, y=0)
+
+    left = LeftNav(main_window, player, left_nav)
+
+
+'''
     left_canvas = Canvas(left_nav)
-    left_canvas.config(background=left_nav_background, highlightthickness=0, height=main_window.sh, width=200)
+    left_canvas.config(background=conf.left_nav_background, highlightthickness=0, height=main_window.sh, width=200)
     left_canvas.place(x=0, y=0)
 
     if conf.debug_lines == 1:
@@ -332,13 +341,13 @@ def build_left_nav_menu():
 
     # left nav values
 
-    logo_image = Image.open(title_image_path)
+    logo_image = Image.open(conf.title_image_path)
     logo_image.thumbnail([198, 48], Image.ANTIALIAS)
     logo_image_res = ImageTk.PhotoImage(logo_image)
     new_planet_image = logo_image_res
     planet_images.append(new_planet_image)
     label_logo = Label(left_canvas, image=logo_image_res)
-    label_logo.config(background=left_nav_background)
+    label_logo.config(background=conf.left_nav_background)
     label_logo.planet_image_res = logo_image_res           # keep a reference!
     label_logo.place(anchor='n', x=100, y=0)
 
@@ -348,7 +357,7 @@ def build_left_nav_menu():
 
     resources_start_y = 55
     resources_canvas = Canvas(left_canvas)
-    resources_canvas.config(background=left_nav_background,
+    resources_canvas.config(background=conf.left_nav_background,
                             height=main_window.sh-resources_start_y-202,
                             width=198,
                             highlightthickness=0,
@@ -356,59 +365,64 @@ def build_left_nav_menu():
     resources_canvas.place(anchor='nw', x=0, y=resources_start_y)
 
     label_resources = Label(resources_canvas, text="Resources:", fg='white')
-    label_resources.config(background=left_nav_background)
-    label_resources.grid(row=row, column=0, sticky='w,e')
+    label_resources.config(background=conf.left_nav_background)
+    label_resources.grid(row=row, column=0, sticky='w')
 
-    row += 1
-    label_credits = Label(resources_canvas, text="Credits:", fg='grey')
-    label_credits.config(background=left_nav_background)
-    label_credits.grid(row=row, column=0, sticky='w')
+    # row += 1
+    # label_credits = Label(resources_canvas, text="Credits:", fg='grey')
+    # label_credits.config(background=conf.left_nav_background)
+    # label_credits.grid(row=row, column=0, sticky='w')
 
-    label_credits_val = Label(resources_canvas, text=player.credits, fg='grey')
-    label_credits_val.config(background=left_nav_background)
-    label_credits_val.grid(row=row, column=1, sticky='e')
+    # label_credits_val = Label(resources_canvas, text=player.credits, fg='grey')
+    # label_credits_val.config(background=conf.left_nav_background)
+    # label_credits_val.grid(row=row, column=1, sticky='e')
 
     row += 1
     label_planets = Label(resources_canvas, text="Planets:", fg='grey')
-    label_planets.config(background=left_nav_background)
+    label_planets.config(background=conf.left_nav_background)
     label_planets.grid(row=row, column=0, sticky='w')
 
-    label_planets_val = Label(resources_canvas, text=len(player.planets), fg='grey')
-    label_planets_val.config(background=left_nav_background)
+    label_planets_val = Label(resources_canvas, text=str(len(player.owned_planets)), fg='grey')
+    label_planets_val.config(background=conf.left_nav_background)
     label_planets_val.grid(row=row, column=1, sticky='e')
 
     row += 1
     label_ships = Label(resources_canvas, text="Ships:", fg='grey')
-    label_ships.config(background=left_nav_background)
+    label_ships.config(background=conf.left_nav_background)
     label_ships.grid(row=row, column=0, sticky='w')
 
     label_ships_val = Label(resources_canvas, text=len(player.ships), fg='grey')
-    label_ships_val.config(background=left_nav_background)
+    label_ships_val.config(background=conf.left_nav_background)
     label_ships_val.grid(row=row, column=1, sticky='e')
 
     row += 1
     label_allies = Label(resources_canvas, text="Allies:", fg='grey')
-    label_allies.config(background=left_nav_background)
+    label_allies.config(background=conf.left_nav_background)
     label_allies.grid(row=row, column=0, sticky='w')
 
     label_allies_val = Label(resources_canvas, text=len(player.allies), fg='grey')
-    label_allies_val.config(background=left_nav_background)
+    label_allies_val.config(background=conf.left_nav_background)
     label_allies_val.grid(row=row, column=1, sticky='e')
 
     row += 1
     label_enemies = Label(resources_canvas, text="Enemies:", fg='grey')
-    label_enemies.config(background=left_nav_background)
+    label_enemies.config(background=conf.left_nav_background)
     label_enemies.grid(row=row, column=0, sticky='w')
 
     label_enemies_val = Label(resources_canvas, text=len(player.enemies), fg='grey')
-    label_enemies_val.config(background=left_nav_background)
+    label_enemies_val.config(background=conf.left_nav_background)
     label_enemies_val.grid(row=row, column=1, sticky='e')
+
+    row += 1
+    label_separator = Label(resources_canvas, text="", fg='black', width=24)
+    label_separator.config(background=conf.left_nav_background)
+    label_separator.grid(row=row, columnspan=2, sticky='e,w')
 
     # left nav buttons
 
-    left_buttons_start_y = main_window.sh-159
+    left_buttons_start_y = main_window.sh-112
     left_buttons_canvas = Canvas(left_canvas)
-    left_buttons_canvas.config(background=left_nav_background,
+    left_buttons_canvas.config(background=conf.left_nav_background,
                                height=200,
                                width=200,
                                highlightthickness=0,
@@ -416,16 +430,16 @@ def build_left_nav_menu():
     left_buttons_canvas.place(anchor='n', x=100, y=left_buttons_start_y)
 
     button_next_planet = Button(left_buttons_canvas, text="Next Planet", padx=60
-                                , highlightbackground=left_nav_background
+                                , highlightbackground=conf.left_nav_background
                                 , command=button_next_planet_clicked)
     button_next_ship = Button(left_buttons_canvas, text="Next Ship"
-                              , highlightbackground=left_nav_background
+                              , highlightbackground=conf.left_nav_background
                               , command=button_next_ship_clicked)
     button_home_planet = Button(left_buttons_canvas, text="Home Planet"
-                                , highlightbackground=left_nav_background
+                                , highlightbackground=conf.left_nav_background
                                 , command=button_home_planet_clicked)
     button_end_turn = Button(left_buttons_canvas, text="End Turn"
-                             , highlightbackground=left_nav_background
+                             , highlightbackground=conf.left_nav_background
                              , command=button_end_turn_clicked)
 
     button_next_planet.grid(row=0, column=0, sticky='w,e')
@@ -440,6 +454,7 @@ def build_left_nav_menu():
 
     if conf.debug == 1:
         print "Displayed: left_nav,", main_window.sh, ",200"
+'''
 
 
 def button_next_planet_clicked():
@@ -503,7 +518,7 @@ def build_planet_view():
 
     main_canvas.config(width=main_window.sw-200, height=main_window.sh-200)
     main_canvas.config(background='black')
-    main_canvas.config(highlightbackground=main_background)
+    main_canvas.config(highlightbackground=conf.main_background)
     main_canvas.config(highlightthickness=0)
 
     if conf.debug == 1:
