@@ -1,4 +1,5 @@
 import random
+from Tkinter import Label
 from configfile import *
 from math import cos, sin
 
@@ -21,6 +22,12 @@ class Planet(object):
         if conf.debug == 1:
             print "Created Planet: [ x:", self.loc.x, ", y:", self.loc.y, ", pop:", self.population, \
                 ", metals:", self.metals, ", food:", self.food, ", terrain:", str(self.terrain), "]"
+
+
+class PlanetLabel(object):
+    def __init__(self, parent):
+        self.label = Label(parent)
+        self.planet = ""
 
 
 class GeneratePlanet(Planet):

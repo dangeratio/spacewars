@@ -41,8 +41,8 @@ class InitialShip(Ship):
 class GenerateShip(Ship):
     def __init__(self, name, planet_name):
         location = ShipLocation(planet_name, planet_name)
-        super(InitialShip, self).__init__(name, location, initial_speed(), initial_attack()
-                                          , initial_defense(), initial_storage(), initial_seats())
+        super(GenerateShip, self).__init__(name, location, initial_speed(), initial_attack()
+                                           , initial_defense(), initial_storage(), initial_seats())
 
 
 def initial_speed():

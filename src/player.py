@@ -120,6 +120,12 @@ class Player(object):
                     print "ShipGen: Need New Name"
         return return_val
 
+    def get_ship(self, ship_name):
+        for ship in self.ships:
+            if ship.name == ship_name:
+                return ship
+        return -1
+
 
 class InitialPlayer(Player):
     def __init__(self):

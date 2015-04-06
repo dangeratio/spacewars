@@ -27,6 +27,7 @@ class ConfigFile(object):
         self.title_image_path = parser.get('backgrounds', 'title_image_path')
         self.main_text_color = parser.get('backgrounds', 'main_text_color')
         self.second_text_color = parser.get('backgrounds', 'second_text_color')
+        self.alternate_left_nav_background = parser.get('backgrounds', 'alternate_left_nav_background')
 
         self.ice_planet_image_path = parser.get('planet_images', 'ice_planet_image_path')
         self.rock_planet_image_path = parser.get('planet_images', 'rock_planet_image_path')

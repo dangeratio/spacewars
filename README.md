@@ -18,4 +18,4 @@ Planned Features
 
 Screenshot
 
-![screenshot of spacewars](http://i.imgur.com/8HWZqJT.png)
+![screenshot of spacewars](http://i.imgur.com/MHXCcvY.png)

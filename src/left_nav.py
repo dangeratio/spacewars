@@ -1,5 +1,5 @@
 from configfile import *
-from Tkinter import Tk, Frame, Label, Button, Canvas, CENTER, CURRENT, Listbox, END
+from Tkinter import Tk, Frame, Label, Button, Canvas, CENTER, CURRENT, Listbox, END, SINGLE
 from PIL import Image, ImageTk, ImageDraw
 from popup import *
 
@@ -20,6 +20,7 @@ class LeftNav(Canvas):
         self.player = player_
         self.main_window = main_window
         self.parent = left_nav
+        self.selected_ship_id = 0
 
         self.planet_images = []
 
@@ -139,7 +140,7 @@ class LeftNav(Canvas):
         self.label_planet_name = Label(self.planet_info_canvas, text="Name:", fg=conf.second_text_color)
         self.label_planet_name.config(background=conf.left_nav_background)
         self.label_planet_name.grid(row=row, column=0, sticky='w')
-        self.label_planet_name_val = Label(self.planet_info_canvas, text=self.player.selected_planet.name
+        self.label_planet_name_val = Label(self.planet_info_canvas, text=str(self.player.selected_planet.name)
                                            , fg=conf.second_text_color)
         self.label_planet_name_val.config(background=conf.left_nav_background)
         self.label_planet_name_val.grid(row=row, column=1, sticky='e')
@@ -147,7 +148,7 @@ class LeftNav(Canvas):
         self.label_planet_metals = Label(self.planet_info_canvas, text="Metals:", fg=conf.second_text_color)
         self.label_planet_metals.config(background=conf.left_nav_background)
         self.label_planet_metals.grid(row=row, column=0, sticky='w')
-        self.label_planet_metals_val = Label(self.planet_info_canvas, text=self.player.selected_planet.metals
+        self.label_planet_metals_val = Label(self.planet_info_canvas, text=str(self.player.selected_planet.metals)
                                              , fg=conf.second_text_color)
         self.label_planet_metals_val.config(background=conf.left_nav_background)
         self.label_planet_metals_val.grid(row=row, column=1, sticky='e')
@@ -155,7 +156,7 @@ class LeftNav(Canvas):
         self.label_planet_food = Label(self.planet_info_canvas, text="Food:", fg=conf.second_text_color)
         self.label_planet_food.config(background=conf.left_nav_background)
         self.label_planet_food.grid(row=row, column=0, sticky='w')
-        self.label_planet_food_val = Label(self.planet_info_canvas, text=self.player.selected_planet.food
+        self.label_planet_food_val = Label(self.planet_info_canvas, text=str(self.player.selected_planet.food)
                                            , fg=conf.second_text_color)
         self.label_planet_food_val.config(background=conf.left_nav_background)
         self.label_planet_food_val.grid(row=row, column=1, sticky='e')
@@ -163,61 +164,132 @@ class LeftNav(Canvas):
         self.label_planet_terrain = Label(self.planet_info_canvas, text="Terrain:", fg=conf.second_text_color)
         self.label_planet_terrain.config(background=conf.left_nav_background)
         self.label_planet_terrain.grid(row=row, column=0, sticky='w')
-        self.label_planet_terrain_val = Label(self.planet_info_canvas, text=get_terrain(self.player.selected_planet.terrain)
+        self.label_planet_terrain_val = Label(self.planet_info_canvas, text=str(get_terrain(self.player.selected_planet.terrain))
                                               , fg=conf.second_text_color)
         self.label_planet_terrain_val.config(background=conf.left_nav_background)
         self.label_planet_terrain_val.grid(row=row, column=1, sticky='e')
+        row += 1
+        self.label_separator_p = Label(self.planet_info_canvas, text="", fg=conf.left_nav_background, width=24)
+        self.label_separator_p.config(background=conf.left_nav_background)
+        self.label_separator_p.grid(row=row, columnspan=2, sticky='e,w')
 
         # ship info
 
         row = 0
-        self.ship_info_start_y = self.planet_info_start_y + 115
-        self.ship_info_canvas = Canvas(self.left_canvas)
-        self.ship_info_canvas.config(background=conf.left_nav_background,
-                                     width=198,
-                                     highlightthickness=0,
-                                     border=0)
-        self.ship_info_canvas.grid_propagate(False)
-        self.ship_info_canvas.place(anchor='nw', x=0, y=self.ship_info_start_y)
-        self.label_ship_info = Label(self.ship_info_canvas, text="Ship Info:", fg=conf.main_text_color)
-        self.label_ship_info.config(background=conf.left_nav_background)
-        self.label_ship_info.grid(row=row, column=0, sticky='w')
+        self.ship_select_start_y = self.planet_info_start_y + 115
+        self.ship_select_canvas = Canvas(self.left_canvas)
+        self.ship_select_canvas.config(background=conf.left_nav_background,
+                                       width=198,
+                                       highlightthickness=0,
+                                       border=0)
+        self.ship_select_canvas.grid_propagate(False)
+        self.ship_select_canvas.place(anchor='nw', x=0, y=self.ship_select_start_y)
+        self.label_ship_select = Label(self.ship_select_canvas, text="Select Ship:", fg=conf.main_text_color)
+        self.label_ship_select.config(background=conf.left_nav_background)
+        self.label_ship_select.grid(row=row, column=0, sticky='w')
 
         # future implementation
 
         # if selected_ship.name != '':
-        if isset(self.player.selected_ship) != '' and self.player.selected_ship != 0:
+        if isset(self.selected_ship_name):
+
+            if conf.debug == 1:
+                print "Showing Selected Ship (init)"
+
+            current_ship = self.player.get_ship(self.selected_ship_name)
+
+            row += 1
+            self.listbox_ship = Listbox(self.ship_select_canvas, width=198
+                                        , background=conf.alternate_left_nav_background, borderwidth=1)
+            self.listbox_ship.config(selectmode=SINGLE)
+            for ship in self.player.ships:
+                self.listbox_ship.insert(END, ship.name)
+            self.listbox_ship.selection_set(self.selected_ship_id)
+            self.listbox_ship.grid(row=row, columnspan=4, sticky='w,e')
+            self.listbox_ship.bind('<<ListboxSelect>>', self.poll_ship_list)
+
+            row = 0
+            self.ship_info_start_y = self.ship_select_start_y + 200
+            self.ship_info_canvas = Canvas(self.left_canvas)
+            self.ship_info_canvas.config(background=conf.left_nav_background,
+                                         width=198,
+                                         highlightthickness=0,
+                                         border=0)
+            self.ship_info_canvas.grid_propagate(False)
+            self.ship_info_canvas.place(anchor='nw', x=0, y=self.ship_info_start_y)
+            self.label_ship_info = Label(self.ship_info_canvas, text="Ship Info:", fg=conf.main_text_color)
+            self.label_ship_info.config(background=conf.left_nav_background)
+            self.label_ship_info.grid(row=row, column=0, sticky='w')
+
             row += 1
             self.label_ship_name = Label(self.ship_info_canvas, text="Name:", fg=conf.second_text_color)
             self.label_ship_name.config(background=conf.left_nav_background)
-            self.label_ship_name.grid(row=row, column=0, sticky='w')
-            self.label_ship_name_val = Label(self.planet_info_canvas, text=self.player.selected_ship.name, fg=conf.second_text_color)
+            self.label_ship_name.grid(row=row, column=0, columnspan=2, sticky='w')
+            self.label_ship_name_val = Label(self.ship_info_canvas, text=current_ship.name
+                                             , fg=conf.second_text_color)
             self.label_ship_name_val.config(background=conf.left_nav_background)
-            self.label_ship_name_val.grid(row=row, column=1, sticky='e')
+            self.label_ship_name_val.grid(row=row, column=2, columnspan=2, sticky='e')
+
+            row += 1
+            self.label_ship_attack = Label(self.ship_info_canvas, text="Attack:", fg=conf.second_text_color)
+            self.label_ship_attack.config(background=conf.left_nav_background)
+            self.label_ship_attack.grid(row=row, column=0, sticky='w')
+            self.label_ship_attack_val = Label(self.ship_info_canvas, text=current_ship.attack
+                                             , fg=conf.second_text_color)
+            self.label_ship_attack_val.config(background=conf.left_nav_background)
+            self.label_ship_attack_val.grid(row=row, column=1, sticky='e')
+            self.label_ship_defense = Label(self.ship_info_canvas, text="Defense:", fg=conf.second_text_color)
+            self.label_ship_defense.config(background=conf.left_nav_background)
+            self.label_ship_defense.grid(row=row, column=2, sticky='w')
+            self.label_ship_defense_val = Label(self.ship_info_canvas, text=current_ship.defense
+                                             , fg=conf.second_text_color)
+            self.label_ship_defense_val.config(background=conf.left_nav_background)
+            self.label_ship_defense_val.grid(row=row, column=3, sticky='e')
+
+            row += 1
+            self.label_ship_storage = Label(self.ship_info_canvas, text="Storage:", fg=conf.second_text_color)
+            self.label_ship_storage.config(background=conf.left_nav_background)
+            self.label_ship_storage.grid(row=row, column=0, columnspan=2, sticky='w')
+            self.label_ship_storage_val = Label(self.ship_info_canvas, text=current_ship.storage
+                                             , fg=conf.second_text_color)
+            self.label_ship_storage_val.config(background=conf.left_nav_background)
+            self.label_ship_storage_val.grid(row=row, column=2, columnspan=2, sticky='e')
+
+            row += 1
+            self.label_ship_seats = Label(self.ship_info_canvas, text="Seats:", fg=conf.second_text_color)
+            self.label_ship_seats.config(background=conf.left_nav_background)
+            self.label_ship_seats.grid(row=row, column=0, columnspan=2, sticky='w')
+            self.label_ship_seats_val = Label(self.ship_info_canvas, text=current_ship.seats
+                                             , fg=conf.second_text_color)
+            self.label_ship_seats_val.config(background=conf.left_nav_background)
+            self.label_ship_seats_val.grid(row=row, column=2, columnspan=2, sticky='e')
+
+            row += 1
+            self.label_separator_s = Label(self.ship_info_canvas, text="", fg=conf.left_nav_background, width=24)
+            self.label_separator_s.config(background=conf.left_nav_background)
+            self.label_separator_s.grid(row=row, columnspan=4, sticky='e,w')
+
         else:
+
+            if conf.debug == 1:
+                print "No Selected Ship Detected (init)"
+
             row += 1
-            self.label_ship_name = Label(self.ship_info_canvas, text="No Ship Selected", fg=conf.second_text_color)
-            self.label_ship_name.config(background=conf.left_nav_background)
-            self.label_ship_name.grid(row=row, columnspan=2, sticky='w')
-            row += 1
-            self.listbox_ship = Listbox(self.ship_info_canvas)
+            self.listbox_ship = Listbox(self.ship_select_canvas, width=198
+                                        , background=conf.alternate_left_nav_background, borderwidth=1)
             for ship in self.player.ships:
                 self.listbox_ship.insert(END, ship.name)
-            self.listbox_ship.after(250, self.poll_ship_list)
+            self.listbox_ship.grid(row=row, columnspan=4, sticky='w,e')
+            self.listbox_ship.bind('<<ListboxSelect>>', self.poll_ship_list)
+            row += 1
+            self.label_ship_name = Label(self.ship_select_canvas, text="No Ship Selected", fg=conf.second_text_color)
+            self.label_ship_name.config(background=conf.left_nav_background)
+            self.label_ship_name.grid(row=row, columnspan=4, sticky='w')
 
-
-
-
-
-
-
-
-
-        row += 1
-        self.label_separator = Label(self.planet_info_canvas, text="", fg=conf.left_nav_background, width=24)
-        self.label_separator.config(background=conf.left_nav_background)
-        self.label_separator.grid(row=row, columnspan=2, sticky='e,w')
-
+            row += 1
+            self.label_separator_s = Label(self.ship_select_canvas, text="", fg=conf.left_nav_background, width=24)
+            self.label_separator_s.config(background=conf.left_nav_background)
+            self.label_separator_s.grid(row=row, columnspan=4, sticky='e,w')
 
         if conf.debug == 1:
             print "CreatedLine:", 0, " ", 0, " ", main_window.sw-200, " ", main_window.sh-200
@@ -227,22 +299,30 @@ class LeftNav(Canvas):
         if conf.debug == 1:
             print "Displayed: left_nav,", main_window.sh, ",200"
 
-    def poll_ship_list(self):
-        new_ship_name = self.listbox_ship.curselection()
+    def poll_ship_list(self, event):
+
+        w = event.widget
+        index = int(w.curselection()[0])
+        new_ship_name = w.get(index)
         if isset(self.selected_ship_name):
             if self.selected_ship_name == "":
                 if new_ship_name != self.selected_ship_name:
                     self.ship_selction_has_changed(new_ship_name)
                     self.selected_ship_name = new_ship_name
-        self.main_window.after(250, self.poll_ship_list)
-
-    def ship_selction_has_changed(self, new_ship_name):
-        print "ShipSelection:", new_ship_name
+                    self.selected_ship_id = w.curselection()
+                    if conf.debug == 1:
+                        print "SelectedShip:", self.selected_ship_name
+                    self.redraw(self.main_window, self.player)
+        else:
+            self.selected_ship_name = new_ship_name
+            self.selected_ship_id = w.curselection()
+            if conf.debug == 1:
+                print "SelectedShip:", self.selected_ship_name
+            self.redraw(self.main_window, self.player)
 
     def redraw(self, main_window, player):
 
         self.player = player
-
 
         if conf.debug == 1:
             print "Redrawing Left Nav"
@@ -289,6 +369,152 @@ class LeftNav(Canvas):
         if conf.debug == 1:
             print "Left Buttons Start Y:", self.left_buttons_start_y
 
+        # Planet Info Set
+
+        row = 0
+        self.planet_info_start_y = self.resources_start_y + 115
+        self.planet_info_canvas.place(anchor='nw', x=0, y=self.planet_info_start_y)
+        self.label_planet_info.grid(row=row, column=0, sticky='w')
+        row += 1
+        self.label_planet_name.grid(row=row, column=0, sticky='w')
+        self.label_planet_name_val.grid(row=row, column=1, sticky='e')
+        row += 1
+        self.label_planet_metals.grid(row=row, column=0, sticky='w')
+        self.label_planet_metals_val.grid(row=row, column=1, sticky='e')
+        row += 1
+        self.label_planet_food.grid(row=row, column=0, sticky='w')
+        self.label_planet_food_val.grid(row=row, column=1, sticky='e')
+        row += 1
+        self.label_planet_terrain.grid(row=row, column=0, sticky='w')
+        self.label_planet_terrain_val.grid(row=row, column=1, sticky='e')
+        row += 1
+        self.label_separator_p.grid(row=row, columnspan=2, sticky='e,w')
+
+        # prep for ship section
+
+        if isset(self.ship_select_canvas):
+            self.ship_select_canvas.destroy()
+
+        # ship info
+
+        row = 0
+        self.ship_select_start_y = self.planet_info_start_y + 115
+        self.ship_select_canvas = Canvas(self.left_canvas)
+        self.ship_select_canvas.config(background=conf.left_nav_background,
+                                       width=198,
+                                       highlightthickness=0,
+                                       border=0)
+        self.ship_select_canvas.grid_propagate(False)
+        self.ship_select_canvas.place(anchor='nw', x=0, y=self.ship_select_start_y)
+        self.label_ship_select = Label(self.ship_select_canvas, text="Select Ship:", fg=conf.main_text_color)
+        self.label_ship_select.config(background=conf.left_nav_background)
+        self.label_ship_select.grid(row=row, column=0, sticky='w')
+
+        # future implementation
+
+        # if selected_ship.name != '':
+        if self.selected_ship_name != "":
+
+            if conf.debug == 1:
+                print "Showing Selected Ship (redraw)"
+
+            current_ship = self.player.get_ship(self.selected_ship_name)
+
+            row += 1
+            self.listbox_ship = Listbox(self.ship_select_canvas, width=198
+                                        , background=conf.alternate_left_nav_background, borderwidth=1)
+            self.listbox_ship.config(selectmode=SINGLE)
+            for ship in self.player.ships:
+                self.listbox_ship.insert(END, ship.name)
+            self.listbox_ship.selection_set(self.selected_ship_id)
+            self.listbox_ship.grid(row=row, columnspan=4, sticky='w,e')
+            self.listbox_ship.bind('<<ListboxSelect>>', self.poll_ship_list)
+
+            row = 0
+            self.ship_info_start_y = self.ship_select_start_y + 200
+            self.ship_info_canvas = Canvas(self.left_canvas)
+            self.ship_info_canvas.config(background=conf.left_nav_background,
+                                         width=198,
+                                         highlightthickness=0,
+                                         border=0)
+            self.ship_info_canvas.grid_propagate(False)
+            self.ship_info_canvas.place(anchor='nw', x=0, y=self.ship_info_start_y)
+            self.label_ship_info = Label(self.ship_info_canvas, text="Ship Info:", fg=conf.main_text_color)
+            self.label_ship_info.config(background=conf.left_nav_background)
+            self.label_ship_info.grid(row=row, column=0, sticky='w')
+
+            row += 1
+            self.label_ship_name = Label(self.ship_info_canvas, text="Name:", fg=conf.second_text_color)
+            self.label_ship_name.config(background=conf.left_nav_background)
+            self.label_ship_name.grid(row=row, column=0, columnspan=2, sticky='w')
+            self.label_ship_name_val = Label(self.ship_info_canvas, text=current_ship.name
+                                             , fg=conf.second_text_color)
+            self.label_ship_name_val.config(background=conf.left_nav_background)
+            self.label_ship_name_val.grid(row=row, column=2, columnspan=2, sticky='e')
+
+            row += 1
+            self.label_ship_attack = Label(self.ship_info_canvas, text="Attack:", fg=conf.second_text_color)
+            self.label_ship_attack.config(background=conf.left_nav_background)
+            self.label_ship_attack.grid(row=row, column=0, sticky='w')
+            self.label_ship_attack_val = Label(self.ship_info_canvas, text=current_ship.attack
+                                             , fg=conf.second_text_color)
+            self.label_ship_attack_val.config(background=conf.left_nav_background)
+            self.label_ship_attack_val.grid(row=row, column=1, sticky='e')
+            self.label_ship_defense = Label(self.ship_info_canvas, text="Defense:", fg=conf.second_text_color)
+            self.label_ship_defense.config(background=conf.left_nav_background)
+            self.label_ship_defense.grid(row=row, column=2, sticky='w')
+            self.label_ship_defense_val = Label(self.ship_info_canvas, text=current_ship.defense
+                                             , fg=conf.second_text_color)
+            self.label_ship_defense_val.config(background=conf.left_nav_background)
+            self.label_ship_defense_val.grid(row=row, column=3, sticky='e')
+
+            row += 1
+            self.label_ship_storage = Label(self.ship_info_canvas, text="Storage:", fg=conf.second_text_color)
+            self.label_ship_storage.config(background=conf.left_nav_background)
+            self.label_ship_storage.grid(row=row, column=0, columnspan=2, sticky='w')
+            self.label_ship_storage_val = Label(self.ship_info_canvas, text=current_ship.storage
+                                             , fg=conf.second_text_color)
+            self.label_ship_storage_val.config(background=conf.left_nav_background)
+            self.label_ship_storage_val.grid(row=row, column=2, columnspan=2, sticky='e')
+
+            row += 1
+            self.label_ship_seats = Label(self.ship_info_canvas, text="Seats:", fg=conf.second_text_color)
+            self.label_ship_seats.config(background=conf.left_nav_background)
+            self.label_ship_seats.grid(row=row, column=0, columnspan=2, sticky='w')
+            self.label_ship_seats_val = Label(self.ship_info_canvas, text=current_ship.seats
+                                             , fg=conf.second_text_color)
+            self.label_ship_seats_val.config(background=conf.left_nav_background)
+            self.label_ship_seats_val.grid(row=row, column=2, columnspan=2, sticky='e')
+
+            row += 1
+            self.label_separator_s = Label(self.ship_info_canvas, text="", fg=conf.left_nav_background, width=24)
+            self.label_separator_s.config(background=conf.left_nav_background)
+            self.label_separator_s.grid(row=row, columnspan=4, sticky='e,w')
+
+        else:
+
+            if conf.debug == 1:
+                print "No Selected Ship Detected (redraw)"
+
+            row += 1
+            self.listbox_ship = Listbox(self.ship_select_canvas, width=198
+                                        , background=conf.alternate_left_nav_background, borderwidth=1)
+            for ship in self.player.ships:
+                self.listbox_ship.insert(END, ship.name)
+            self.listbox_ship.grid(row=row, columnspan=2, sticky='w,e')
+            self.listbox_ship.bind('<<ListboxSelect>>', self.poll_ship_list)
+            row += 1
+            self.label_ship_name = Label(self.ship_select_canvas, text="No Ship Selected", fg=conf.second_text_color)
+            self.label_ship_name.config(background=conf.left_nav_background)
+            self.label_ship_name.grid(row=row, columnspan=2, sticky='w')
+
+            row += 1
+            self.label_separator_s = Label(self.ship_select_canvas, text="", fg=conf.left_nav_background, width=24)
+            self.label_separator_s.config(background=conf.left_nav_background)
+            self.label_separator_s.grid(row=row, columnspan=4, sticky='e,w')
+
+
+
 
 
 def convert_coords_x(main_window, x):
@@ -323,8 +549,18 @@ def button_next_ship_clicked(event):
 
 
 def button_home_planet_clicked(event):
+
+    global player, active_view
+
     if conf.debug == 1:
         print "Home Planet Clicked"
+    for planet in player.planets:
+        if player.home_planet_name == planet.name:
+            player.selected_planet = planet
+            if active_view == "intro":
+                draw_intro_nav()
+            elif active_view == "main":
+                build_main_nav()
     pass
 
 
