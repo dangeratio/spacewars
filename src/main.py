@@ -1,7 +1,7 @@
 import os, sys, inspect
 from Tkinter import Tk
 
-from Controllers.app import *
+from Controllers.application_controller import *
 
 
 def main():

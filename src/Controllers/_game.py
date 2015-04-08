@@ -30,8 +30,9 @@ pending_actions = []
 active_view variable controls what view is displayed.  These are the values:
 - intro: this is the first screen a user sees when they enter the game
 - main: this is the main game screen the user will spend most of the time in the game playing
-'''
+''' '''
 active_view = "intro"
+'''
 
 main_canvas_has_been_created = False
 
@@ -139,7 +140,7 @@ def build_variables():
 # introduction handling
 #
 
-
+'''
 def hide_intro_nav():
     intro_nav.destroy()
     background_frame.destroy()
@@ -156,8 +157,8 @@ def hide_intro_nav():
 
     if active_view == "intro":
         active_view = ""
-
-
+'''
+'''
 def init_intro_nav():
     global intro_nav, background_frame, can, button_load_game\
         , button_new_game, button_quit, intro_fill_bottom\
@@ -196,6 +197,9 @@ def init_intro_nav():
     intro_btm_padding.configure(height=intro_padding_height, background=conf.intro_background, highlightbackground=conf.intro_background)
 
 
+'''
+'''
+
 def draw_intro_nav():
 
     # frame setup
@@ -226,15 +230,15 @@ def draw_intro_nav():
 
     intro_btm_padding.pack()
 
-    '''
+
     ######################################################
     #
     # remove next line for normal operation
     #
     ######################################################
-    '''
-    pending_actions.append('invoke_new_game')
 
+'''
+'''
 
 def quitting():
     # do any needed cleanup
@@ -274,12 +278,11 @@ def event_button_new_game():
 
 def event_button_load_game():
     pass
-    # not yet implemented
 
 
 def event_button_quit():
     quitting()
-
+'''
 
 # main game handling
 
