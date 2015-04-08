@@ -1,3 +1,17 @@
+# planet.py
+# description: sub model object under player
+#
+# Game
+#     Player
+#         Ship
+#         Planet
+
+
+class Game(object):
+    def __init__(self):
+        pass
+
+
 import random
 from Tkinter import Label
 from configfile import *
@@ -114,3 +128,16 @@ def convert_angles_to_loc(angle, distance, size):
 
 def generate_planet_name():
     return data.planet_names[random.randint(0, len(data.planet_names)-1)]
+
+
+def check_intersect(loc1, loc2):
+    size1 = loc1.size
+    size2 = loc2.size
+
+    distance = get_distance(loc1, loc2)
+
+    if distance < loc1.size + loc2.size:
+        return True
+    else:
+        return False
+

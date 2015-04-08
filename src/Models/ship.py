@@ -1,3 +1,11 @@
+# ship.py
+# description: sub model object under player
+#
+# Game
+#     Player
+#         Ship
+#         Planet
+
 import random
 from configfile import *
 

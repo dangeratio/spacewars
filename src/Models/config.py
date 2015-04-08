@@ -35,6 +35,11 @@ class ConfigFile(object):
         self.water_planet_image_path = parser.get('planet_images', 'water_planet_image_path')
         self.alien_planet_image_path = parser.get('planet_images', 'alien_planet_image_path')
 
+        self.intro_padding_height = parser.get('initial', 'intro_padding_height')
+        self.navs_have_been_built = parser.get('initial', 'navs_have_been_built')
+        self.main_canvas_has_been_created = parser.get('initial', 'main_canvas_has_been_created')
+
+
     def print_debug(self):
         if self.debug:
             print "Config File Loaded [debug:", self.debug, ", version:", self.version, "]"

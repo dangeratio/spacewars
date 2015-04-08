@@ -1,7 +1,16 @@
+# player.py
+# description: middle model object under player
+#
+# Game
+#     Player
+#         Ship
+#         Planet
+
+
 from math import sqrt
-from configfile import ConfigFile
-from planet import *
-from ship import *
+from Models.config import *
+from Models.planet import *
+from Models.ship import *
 
 
 conf = ConfigFile()
@@ -10,6 +19,7 @@ data = DataFile()
 
 class Player(object):
     def __init__(self, name, player_credits, planet_list, ship_list, enemies_list, allies_list):
+
         self.name = name
         self.credits = player_credits
         self.planets = planet_list

@@ -1,3 +1,13 @@
+# main_controller.py
+# description: this is the controller for the main gameplay screen, containing left nav, main nav, and map nap
+#
+# ApplicationController
+#     IntroController
+#     MainController*
+#         LeftNavController
+#         MainNavController
+#         MapNavController
+
 from Tkinter import Frame
 from Controllers.main_nav_controller import *
 from Controllers.left_nav_controller import *

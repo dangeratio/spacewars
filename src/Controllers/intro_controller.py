@@ -1,4 +1,12 @@
-
+# intro_controller.py
+# description: this is the controller for the intro screen
+#
+# ApplicationController
+#     IntroController*
+#     MainController
+#         LeftNavController
+#         MainNavController
+#         MapNavController
 
 class IntroController(object):
     def __init__(self, application_controller):

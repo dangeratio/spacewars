@@ -1,3 +1,8 @@
+# _game.py
+# description: this contains an old set of game code, no longer used, only for reference at this point
+#
+#
+
 from Tkinter import Tk, Frame, Label, Button, Canvas, CENTER
 from PIL import Image, ImageTk, ImageDraw
 from math import sqrt
@@ -9,13 +14,17 @@ from configfile import *
 from left_nav import *
 
 # load config file
+'''
 conf = ConfigFile()
 conf.print_debug()
-
+'''
+'''
 # colors and intro
 intro_padding_height = 77.5
 navs_have_been_built = False
+'''
 
+'''
 # initial generation variables
 selected_planet = ""
 selected_ship = ""
@@ -27,6 +36,8 @@ planet_images = []
 pending_actions = []
 
 '''
+
+'''
 active_view variable controls what view is displayed.  These are the values:
 - intro: this is the first screen a user sees when they enter the game
 - main: this is the main game screen the user will spend most of the time in the game playing
@@ -34,7 +45,11 @@ active_view variable controls what view is displayed.  These are the values:
 active_view = "intro"
 '''
 
+'''
 main_canvas_has_been_created = False
+'''
+
+'''
 
 class MainWindow(Frame):
 
@@ -54,17 +69,6 @@ class MainWindow(Frame):
 
         self.update()
 
-        '''
-        # Test Code
-        print self.winfo_height()
-        print self.winfo_reqheight()
-        print self.winfo_screenheight()
-        print self.winfo_vrootheight()
-        print ""
-        print self.winfo_screenwidth()
-        print self.winfo_vrootwidth()
-        '''
-
         self.parent.geometry('%dx%d+%d+%d' % (self.sw, self.sh, 0, 0))
 
     def remove_this(self):
@@ -75,8 +79,9 @@ class MainWindow(Frame):
             draw_intro_nav()
         elif active_view == "main":
             build_main_nav()
+'''
 
-
+'''
 class ContainerFrame(Frame):
 
     def __init__(self, parent):
@@ -87,16 +92,19 @@ class ContainerFrame(Frame):
     def remove_this(self):
         self.frame.destroy()
 
+'''
 
 #
 # general window handling
 #
 
-
+'''
 def click(event):
     print "clicked at", event.x, event.y
 
+'''
 
+'''
 def resize(event):
 
     global main_window
@@ -116,7 +124,8 @@ def resize(event):
 
     main_window.refresh()
 
-
+'''
+'''
 def main():
     init_intro_nav()
     draw_intro_nav()
@@ -128,6 +137,7 @@ def main():
 
     root.mainloop()
 
+'''
 '''
 def build_variables():
     user_ship = Ship(1, 1, 1, 1, 1)
@@ -286,12 +296,12 @@ def event_button_quit():
 
 # main game handling
 
-
+'''
 class Game(object):
     def __init__(self, player):
         self.player = player
-
-
+'''
+'''
 def build_main_nav():
 
     global left_nav, bottom_nav, main_nav, map_nav, navs_have_been_built, main_window
@@ -317,8 +327,8 @@ def build_main_nav():
         build_planet_view()
         build_left_nav_menu()
         navs_have_been_built = True
-
-
+'''
+'''
 def build_left_nav_menu():
 
     global left_nav, left_canvas, left
@@ -326,7 +336,9 @@ def build_left_nav_menu():
     left_nav.place(x=0, y=0)
 
     left = LeftNav(main_window, player, left_nav)
-
+'''
+'''
+# no longer using a bottom nav
 
 def build_bottom_nav_menu():
 
@@ -335,16 +347,16 @@ def build_bottom_nav_menu():
 
     if conf.debug == 1:
         print "Displayed: bottom_nav,200,", str(main_window.sw)
-
-
+'''
+'''
 def build_map():
 
     global main_nav
     map_nav.place(x=main_window.sw-200, y=0)
     if conf.debug == 1:
         print "Displayed: map_nav,200,200"
-
-
+'''
+'''
 def build_planet_view():
 
     global main_canvas_has_been_created, main_nav, main_canvas
@@ -386,8 +398,8 @@ def build_planet_view():
             draw_planet(planet)
 
     finish_drawing_planets()
-
-
+'''
+'''
 def redraw_planet_view():
 
     global main_window, main_canvas
@@ -406,21 +418,10 @@ def redraw_planet_view():
         build_planet_view()
         if conf.debug == 1:
             print "Redraw:New"
+'''
 
 
-def add_unique(array, item):
-
-    in_array = False
-    for i in array:
-        if i == item:
-            in_array = True
-
-    if not in_array:
-        array.append(item)
-
-    return array
-
-
+'''
 def check_intersect(loc1, loc2):
     size1 = loc1.size
     size2 = loc2.size
@@ -431,8 +432,8 @@ def check_intersect(loc1, loc2):
         return True
     else:
         return False
-
-
+'''
+'''
 def get_terrain_color(terrain):
 
     # Planet Terrains
@@ -502,8 +503,8 @@ def finish_drawing_planets():
         # print "Drawing: Failed:", player.failed_to_find
         print "WindowSize:", main_window.sw, ":", main_window.sh
         # print "PlanetsDrawn:", len(player.planets)
-
-
+'''
+'''
 def select_planet(event, planet):
 
     global main_window
@@ -513,8 +514,8 @@ def select_planet(event, planet):
     if conf.debug == 1:
         print "SelectingPlanet:", planet.name
     main_window.refresh()
-
-
+'''
+'''
 def draw_planet(planet):
 
     global main_nav, main_canvas, label, planet_images, main_window
@@ -574,11 +575,12 @@ def draw_planet_highlighted(planet):
 
     if conf.debug == 1:
         print "Drawing planet: [", planet.name, ",", new_x, ",", new_y, ",", planet.loc.size, ",", color, "]"
-
-
+'''
+'''
 if __name__ == '__main__':
     # globalize the main window
     root = Tk()
     main_window = MainWindow(root)
     main()
 
+'''
