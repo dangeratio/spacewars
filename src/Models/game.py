@@ -1,7 +1,7 @@
 # game.py
 # description: Main model object, all gameplay models are below
 #
-# Game
+# Game*
 #     Player
 #         Ship
 #         Planet

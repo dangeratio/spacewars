@@ -4,17 +4,11 @@
 # Game
 #     Player
 #         Ship
-#         Planet
-
-
-class Game(object):
-    def __init__(self):
-        pass
-
+#         Planet*
 
 import random
 from Tkinter import Label
-from configfile import *
+from Models.config import *
 from math import cos, sin
 
 

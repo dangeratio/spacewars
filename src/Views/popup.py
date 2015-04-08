@@ -1,5 +1,5 @@
 from Tkinter import Frame, Label, Button, Canvas, ALL
-from configfile import *
+from Models.config import *
 
 
 conf = ConfigFile()

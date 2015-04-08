@@ -7,67 +7,62 @@ from Views.popup import *
 
 
 class MainScreen(Frame):
-    def __init__(self, parent):
+    def __init__(self, controller, initial_view):
 
-        Frame.__init__(self, parent, background=conf.window_background)
+        # connect up controller
+        self.controller = controller
 
-        # Class Subs
-        #
-        # future list of class subs here
-        #
-        #
-        #
-        #
+        # initial window setup
+        self.root = Tk()
+        Frame.__init__(self, self.root, background=conf.window_background)
+        self.root.title("space")
 
-        self.intro_screen = IntroScreen()
+        # child object references
+        self.intro_screen = 0
+        self.main_nav = 0
+        self.left_nav = 0
+        self.map_nav = 0
 
-        # original code to add a left nav to the window
-
-
-        self.parent = parent
-
-        self.parent.title("space")
-        # Handle click event
-        # self.bind("<Button-1>", click)
+        # window resize event
         self.bind("<Configure>", self.resize)
         self.pack(fill='both', expand=1)
 
+        # initial window size, setup, creation
         self.sw = self.winfo_screenwidth()
         self.sh = self.winfo_screenheight()
-
         self.update()
+        self.root.geometry('%dx%d+%d+%d' % (self.sw, self.sh, 0, 0))
+        self.initial_view = initial_view
+        self.display(initial_view)
 
-        # un init-ed vars
-        self.active_view = ''
+        # enter root runloop
+        self.root.mainloop()
 
-        self.parent.geometry('%dx%d+%d+%d' % (self.sw, self.sh, 0, 0))
+    def display(self, view):
 
-        '''
-        active_view variable controls what view is displayed.  These are the values:
-        - intro: this is the first screen a user sees when they enter the game
-        - main: this is the main game screen the user will spend most of the time in the game playing
-        '''
-
-        self.active_view = "intro"
+        if view == 'intro':
+            self.intro_screen = IntroScreen(self.controller.main_controller.intro_controller, self)
+        elif view == 'main':
+            # create nav's for the main view
+            self.main_nav = MainNav()
+            self.left_nav = LeftNav()
+            # self.map_nav = MapNav()       # not yet implemented
 
     def resize(self, event):
 
-        global main_window
-        global active_view
+        self.sw = event.width
+        self.sh = event.height
 
-        main_window.sw = event.width
-        main_window.sh = event.height
+        if self.sw <= 500:
+            self.sw = 500
 
-        if main_window.sw <= 500:
-            main_window.sw = 500
-
-        if main_window.sh <= 500:
-            main_window.sh = 500
+        if self.sh <= 500:
+            self.sh = 500
 
         if conf.debug == 1:
-            print "(", main_window.sw, ",", main_window.sh, ",", active_view, ")"
+            print "(", self.sw, ",", self.sh, ",", self.initial_view, ")"
 
-        main_window.refresh()
+        self.refresh()
 
 
     def build_left_nav_menu(self):

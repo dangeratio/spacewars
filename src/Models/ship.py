@@ -7,7 +7,7 @@
 #         Planet
 
 import random
-from configfile import *
+from Models.config import *
 
 
 conf = ConfigFile()

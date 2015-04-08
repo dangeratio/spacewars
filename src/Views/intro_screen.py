@@ -1,47 +1,50 @@
-from Tkinter import Frame
-
+from Tkinter import Frame, Canvas
 
 class IntroScreen(Frame):
     def __init__(self, parent):     # formerly init_intro_nav():
 
+        '''     using class objects for all these vars now
         global intro_nav, background_frame, can, button_load_game\
             , button_new_game, button_quit, intro_fill_bottom\
             , label_version, title_image_res\
             , intro_top_padding, intro_btm_padding
+        '''
+
+        self.parent = parent
 
         # frame setup
 
-        background_frame = Frame(main_window, height=main_window.sh, width=main_window.sw, background=conf.window_background)
-        intro_nav = Frame(background_frame, height=500, width=500, background=conf.intro_background)
+        background_frame = Frame(self.parent, height=self.parent.sh, width=self.parent.sw, background=self.parent.conf.window_background)
+        intro_nav = Frame(background_frame, height=500, width=500, background=self.parent.conf.intro_background)
 
         # elements
 
         intro_top_padding = Canvas(intro_nav)
-        intro_top_padding.configure(height=intro_padding_height, background=conf.intro_background, highlightbackground=conf.intro_background)
+        intro_top_padding.configure(height=intro_padding_height, background=self.parent.conf.intro_background, highlightbackground=self.parent.conf.intro_background)
 
         title_image_resource = Image.open(conf.title_image_path)
         title_image_res = ImageTk.PhotoImage(title_image_resource)
-        can = Canvas(intro_nav, background=conf.intro_background, highlightbackground=conf.intro_background)
+        can = Canvas(intro_nav, background=self.parent.conf.intro_background, highlightbackground=self.parent.conf.intro_background)
         can.title_image_res = title_image_res
         can.config(width=title_image_res.width(), height=title_image_res.height())
 
-        button_new_game = Button(intro_nav, text="New Game", command=event_button_new_game, bg=conf.intro_background)
-        button_new_game.config(highlightbackground=conf.intro_background)
+        button_new_game = Button(intro_nav, text="New Game", command=event_button_new_game, bg=self.parent.conf.intro_background)
+        button_new_game.config(highlightbackground=self.parent.conf.intro_background)
 
-        button_load_game = Button(intro_nav, text="Load Game", command=event_button_load_game, bg=conf.intro_background)
-        button_load_game.config(highlightbackground=conf.intro_background)
+        button_load_game = Button(intro_nav, text="Load Game", command=event_button_load_game, bg=self.parent.conf.intro_background)
+        button_load_game.config(highlightbackground=self.parent.conf.intro_background)
         button_load_game.config(state='disabled')
 
-        button_quit = Button(intro_nav, text="Quit", command=event_button_quit, bg=conf.intro_background)
-        button_quit.config(highlightbackground=conf.intro_background)
+        button_quit = Button(intro_nav, text="Quit", command=event_button_quit, bg=self.parent.conf.intro_background)
+        button_quit.config(highlightbackground=self.parent.conf.intro_background)
 
-        label_version = Label(intro_nav, bg=conf.intro_background, text=conf.version)
+        label_version = Label(intro_nav, bg=self.parent.conf.intro_background, text=self.parent.conf.version)
 
         intro_btm_padding = Canvas(intro_nav)
-        intro_btm_padding.configure(height=intro_padding_height, background=conf.intro_background, highlightbackground=conf.intro_background)
+        intro_btm_padding.configure(height=intro_padding_height, background=self.parent.conf.intro_background, highlightbackground=self.parent.conf.intro_background)
 
 
-    def hide():     # formerly hide_intro_nav
+    def hide(self):     # formerly hide_intro_nav
         intro_nav.destroy()
         background_frame.destroy()
         can.destroy()
@@ -59,23 +62,23 @@ class IntroScreen(Frame):
             active_view = ""
 
 
-    def draw():       # formerly draw_intro_nav()
+    def draw(self):       # formerly draw_intro_nav()
 
         # frame setup
 
         if conf.debug == 1:
             pass
             # canvas = Canvas(background_frame)
-            # canvas.create_line((0, 0, main_window.sw, main_window.sh), fill=conf.black_color)
+            # canvas.create_line((0, 0, self.parent.sw, self.parent.sh), fill=self.parent.conf.black_color)
             # canvas.pack()
 
         intro_top_padding.pack()
 
         background_frame.pack(fill='both')
-        intro_nav.pack(fill='both', padx=(main_window.sw/2)-250, pady=(main_window.sh/2)-250)
+        intro_nav.pack(fill='both', padx=(self.parent.sw/2)-250, pady=(self.parent.sh/2)-250)
 
         if conf.debug == 1:
-            print "Drew Intro, padding: (", (main_window.sw/2)-250, ",", (main_window.sh/2)-250, ")"
+            print "Drew Intro, padding: (", (self.parent.sw/2)-250, ",", (self.parent.sh/2)-250, ")"
 
         # elements
 

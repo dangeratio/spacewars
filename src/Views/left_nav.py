@@ -1,4 +1,4 @@
-from configfile import *
+from Models.config import *
 from Tkinter import Tk, Frame, Label, Button, Canvas, CENTER, CURRENT, Listbox, END, SINGLE
 from PIL import Image, ImageTk, ImageDraw
 from popup import *

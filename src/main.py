@@ -4,6 +4,8 @@ from Tkinter import Tk
 from Controllers.application_controller import *
 
 
+
+'''
 def main():
     #init_intro_nav()
     #draw_intro_nav()
@@ -13,7 +15,7 @@ def main():
     application.view_intro.draw_intro_nav()
     root.mainloop()
 
-
+'''
 
 if __name__ == '__main__':
 
@@ -21,7 +23,8 @@ if __name__ == '__main__':
     #main_window = MainWindow(root)
     #main()
 
-    root = Tk()
-    application = Application(root)
-    main()
+
+    application = ApplicationController()
+    # root = Tk()
+    # main()
 

@@ -21,10 +21,12 @@ conf = ConfigFile()
 
 
 class MainController(Frame):
-    def __init__(self):
+    def __init__(self, parent):
+
+        self.parent = parent
 
         # define view
-        self.view = MainScreen()
+        self.view = MainScreen(self, 'intro')
 
         # build sub-controller objects
         self.left_nav_controller = LeftNavController()

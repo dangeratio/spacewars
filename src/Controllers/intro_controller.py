@@ -8,8 +8,10 @@
 #         MainNavController
 #         MapNavController
 
+
 class IntroController(object):
-    def __init__(self, application_controller):
+    def __init__(self, parent):
+        self.parent = parent
         pass
 
     def quitting():
