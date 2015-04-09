@@ -162,7 +162,6 @@ class MainNavView(Frame):
         self.draw_planet(self.app.game.player.last_selected_planet)
         self.draw_planet_highlighted(planet)
 
-
     def get_terrain_color(self, terrain):
 
         # Planet Terrains
