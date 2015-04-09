@@ -2,6 +2,7 @@ from Tkinter import Frame, Label, Canvas, CENTER
 from PIL import Image, ImageTk
 
 
+
 class MainNavView(Frame):
     def __init__(self, controller, parent):
         self.controller = controller
@@ -23,7 +24,6 @@ class MainNavView(Frame):
         else:
             self.build_planet_view()
             self.enabled = True
-
 
     def build_planet_view(self):
 
@@ -72,7 +72,8 @@ class MainNavView(Frame):
 
     def redraw_planet_view(self):
 
-        # global main_window, main_canvas
+        app = self.app
+        main_window = app.main_controller.view
 
         if self.main_canvas_has_been_created:
             self.main_canvas.config(width=main_window.sw-200, height=main_window.sh)
@@ -117,7 +118,7 @@ class MainNavView(Frame):
         label.grid()
         label.planet_image_res = planet_image_res           # keep a reference!
         label.place(anchor=CENTER, x=new_x, y=new_y)
-        label.bind("<Button-1>", lambda event, arg=planet: self.select_planet(event, arg))
+        label.bind("<Button-1>", lambda event, arg=planet: self.controller.select_planet(event, arg))
 
         label_name = Label(self.main_canvas, text=planet.name, fg=self.app.conf.main_text_color, bg='black'
                            , borderwidth=1
@@ -155,6 +156,12 @@ class MainNavView(Frame):
 
         if self.app.conf.debug == 1:
             print "Drawing planet: [", planet.name, ",", new_x, ",", new_y, ",", planet.loc.size, ",", color, "]"
+
+    def redraw_planet(self, planet):
+
+        self.draw_planet(self.app.game.player.last_selected_planet)
+        self.draw_planet_highlighted(planet)
+
 
     def get_terrain_color(self, terrain):
 

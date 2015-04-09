@@ -11,6 +11,7 @@
 from Views.intro_view import IntroView
 
 
+
 class IntroController(object):
     def __init__(self, parent):
 

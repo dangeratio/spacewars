@@ -1,6 +1,7 @@
 from ConfigParser import SafeConfigParser
 
 
+
 class ConfigFile(object):
     def __init__(self):
 

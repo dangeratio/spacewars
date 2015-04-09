@@ -17,7 +17,7 @@ from Views.main_view import *
 
 
 
-class MainController(Frame):
+class MainController(object):
     def __init__(self, parent):
 
         self.parent = parent
@@ -37,7 +37,6 @@ class MainController(Frame):
         # trigger display of intro view
         self.app.debug_messaging("MessageSend: display intro")
         self.intro_controller.message("display intro")
-
 
     def broadcast(self, message):
 
@@ -86,6 +85,8 @@ class MainController(Frame):
     def remove_this(self):
         self.frame.destroy()
 
+
+'''
     def trigger_display(self, view):
 
         if view == 'intro':
@@ -96,3 +97,6 @@ class MainController(Frame):
             self.main_nav = MainNavView()
             self.left_nav = LeftNavView()
             # self.map_nav = MapNav()       # not yet implemented
+'''
+
+

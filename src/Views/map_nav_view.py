@@ -1,5 +1,6 @@
 from Tkinter import Frame
 
+
 class MapNavView(Frame):
     def __init__(self):
         pass

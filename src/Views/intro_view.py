@@ -2,6 +2,7 @@ from Tkinter import Frame, Canvas, Button, Label
 from PIL import Image, ImageTk
 
 
+
 class IntroView(Frame):
     def __init__(self, controller, parent):     # formerly init_intro_nav():
 

@@ -11,6 +11,7 @@ from math import sqrt
 from Models.planet import *
 from Models.ship import *
 
+
 data = DataFile()
 
 

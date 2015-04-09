@@ -2,6 +2,7 @@
 from Views.popup_view import *
 
 
+
 class PopupController(object):
     def __init__(self):
         self.view = Popup('null', 'null', 'null')

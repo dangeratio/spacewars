@@ -14,6 +14,7 @@ conf = ConfigFile()
 data = DataFile()
 
 
+
 class Ship(object):
     def __init__(self, name, location, speed, attack, defense, storage, seats):
         self.location = location

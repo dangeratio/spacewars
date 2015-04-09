@@ -13,6 +13,8 @@ Structure
     ApplicationController (C)
         MainController (C)
             main_screen (V)
+            PopupController (C)
+                popup (V)
             LeftNavController (C)
                 left_nav (V)
             MainNavController (C)
@@ -26,3 +28,4 @@ Structure
             player (M)
                 planet(s) (M)
                 ship(s) (M)
+

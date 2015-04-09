@@ -13,6 +13,7 @@ from Tkinter import Frame
 from Views.main_nav_view import *
 
 
+
 class MainNavController(Frame):
     def __init__(self, parent):
         self.parent = parent
@@ -21,15 +22,19 @@ class MainNavController(Frame):
 
     def select_planet(self, event, planet):
 
-        global main_window
-
-        # w = event.widget
-        self.app.player.selected_planet = planet
         self.app.debug(("SelectingPlanet:", planet.name))
 
-        main_window.refresh()
+        # redraw old and new planets
+        self.app.game.player.last_selected_planet = self.app.game.player.selected_planet
+        self.app.game.player.selected_planet = planet
+        self.view.redraw_planet(self.app.game.player.selected_planet)
+
+        #refresh left nav
+        self.parent.left_nav_controller.message('refresh')
 
     def message(self, message):
         if message == 'new game':
             self.view.build()
+
+
 
