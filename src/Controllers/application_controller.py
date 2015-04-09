@@ -11,7 +11,7 @@
 
 from Models.config import *
 from Models.game import *
-from Views.main_screen import *
+from Views.main_view import *
 from Controllers.main_controller import *
 from Controllers.intro_controller import *
 
@@ -22,27 +22,21 @@ class ApplicationController(object):
         # save config
         self.conf = ConfigFile()
 
-        # build intro screen controller to handle intro screen requests
-        self.intro_controller = IntroController(self)
-
         # build main controller to handle main screen requests
         self.main_controller = MainController(self)
 
-        # initiate main screen - now handled within the respective controllers (initiated above)
-        # self.main_screen = MainScreen(self.main_controller, 'intro')       # initiate the main screen with the intro
-        # self.main_screen = MainScreen(self.root, 'main')        # initiate the main screen, skipping the intro
+    def debug(self, message):
+        if self.conf.debug == 1:
+            print message
 
-    def remove_this(self):
-        self.frame.destroy()
+    def debug_messaging(self, message):
+        if self.conf.debug_messaging == 1:
+            print message
 
-    def refresh(self):
-        if self.active_view == "intro":
-            self.main_screen.intro_screen.draw()
-        elif self.active_view == "main":
-            self.main_screen.main_nav.build()
+    def new_game(self):
+        self.game = Game(self)
 
-
-# replace this function using x in array_of_x if/then statement, python is probably more efficent than I am :)
+# replace this function using x in array_of_x if/then statement, python is probably more efficient than I am :)
 
 def add_unique(array, item):
 

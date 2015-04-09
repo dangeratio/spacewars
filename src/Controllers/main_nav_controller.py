@@ -10,19 +10,26 @@
 #         MapNavController
 
 from Tkinter import Frame
+from Views.main_nav_view import *
 
 
 class MainNavController(Frame):
-    def __init__(self):
-        pass
+    def __init__(self, parent):
+        self.parent = parent
+        self.app = self.parent.app
+        self.view = MainNavView(self, self.parent.view)
 
-    def select_planet(event, planet):
+    def select_planet(self, event, planet):
 
         global main_window
 
         # w = event.widget
-        player.selected_planet = planet
-        if conf.debug == 1:
-            print "SelectingPlanet:", planet.name
+        self.app.player.selected_planet = planet
+        self.app.debug(("SelectingPlanet:", planet.name))
+
         main_window.refresh()
+
+    def message(self, message):
+        if message == 'new game':
+            self.view.build()
 

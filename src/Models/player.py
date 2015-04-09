@@ -8,18 +8,17 @@
 
 
 from math import sqrt
-from Models.config import *
 from Models.planet import *
 from Models.ship import *
 
-
-conf = ConfigFile()
 data = DataFile()
 
 
 class Player(object):
-    def __init__(self, name, player_credits, planet_list, ship_list, enemies_list, allies_list):
+    def __init__(self, parent, name, player_credits, planet_list, ship_list, enemies_list, allies_list):
 
+        self.parent = parent
+        self.app = parent.app
         self.name = name
         self.credits = player_credits
         self.planets = planet_list
@@ -32,8 +31,6 @@ class Player(object):
         self.home_planet_name = 0
         self.selected_planet = 0
         self.selected_ship = 0
-
-
 
         if conf.debug == 1:
             print "Created Player: [ name:", name, "]"
@@ -53,7 +50,7 @@ class Player(object):
         new_ship = GenerateShip(name, planet)
         self.ships.append(new_ship)
 
-    def generate_initial_ship(self, initial_planet_name):
+    def generate_initial_ship(self):
 
         # valid_name = False
         # while not valid_name:
@@ -61,7 +58,7 @@ class Player(object):
         #     valid_name = self.check_ship_name(valid_name)
 
         name = generate_ship_name()
-        new_ship = InitialShip(name, initial_planet_name)
+        new_ship = InitialShip(name, self.selected_planet.name)
         self.ships.append(new_ship)
 
     def generate_initial_planet(self):
@@ -138,9 +135,16 @@ class Player(object):
 
 
 class InitialPlayer(Player):
-    def __init__(self):
-        super(InitialPlayer, self).__init__("User", 1000000, [], [], [], [])
+    def __init__(self, parent):
+        super(InitialPlayer, self).__init__(parent, "User", 1000000, [], [], [], [])
 
+        # create players initial ship and planet
+        self.generate_initial_planet()
+        self.generate_initial_ship()
+
+        # create initial planets in game
+        for i in range(self.app.conf.planets_to_generate):
+            self.generate_new_planet()
 
 def check_intersect(loc1, loc2):
     size1 = loc1.size

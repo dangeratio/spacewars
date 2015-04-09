@@ -1,9 +1,4 @@
-import os, sys, inspect
-from Tkinter import Tk
-
 from Controllers.application_controller import *
-
-
 
 '''
 def main():
@@ -19,12 +14,9 @@ def main():
 
 if __name__ == '__main__':
 
-    #root = Tk()
-    #main_window = MainWindow(root)
-    #main()
-
-
+    # initiate application object
     application = ApplicationController()
-    # root = Tk()
-    # main()
+
+    # enter the run loop
+    application.main_controller.view.root.mainloop()
 

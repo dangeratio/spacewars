@@ -12,6 +12,7 @@ class ConfigFile(object):
         # save config
 
         self.debug = int(parser.get('game', 'debug'))
+        self.debug_messaging = int(parser.get('game', 'debug_messaging'))
         self.debug_lines = int(parser.get('game', 'debug_lines'))
         self.version = parser.get('game', 'version')
         self.planets_to_generate = int(parser.get('game', 'initial_planets_to_generate'))

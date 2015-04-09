@@ -10,7 +10,8 @@ from Models.player import *
 
 
 class Game(object):
-    def __init__(self):
+    def __init__(self, parent):
+        self.parent = parent
+        self.app = parent
 
-        self.player = Player()
-        pass
+        self.player = InitialPlayer(self)
