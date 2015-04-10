@@ -18,20 +18,25 @@ class IntroController(object):
         self.parent = parent
         self.app = self.parent.app
         self.view = IntroView(self, self.parent.view)
-        pass
+        self.enabled = True
 
     def message(self, message):
 
-        self.app.debug_messaging("IntroController|Message|" + message)
+        if self.enabled:
 
-        if message == 'display intro':
-            self.view.build()
-            self.view.draw()
+            self.app.debug_messaging("IntroController|Message|" + message)
+
+            if message == 'display intro':
+                self.view.build()
+                self.view.draw()
+            if message == 'refresh':
+                self.view.draw()
 
     def event_button_new_game(self):
 
         self.view.hide()
         self.parent.message('new game')
+        self.enabled = False
 
     def event_button_load_game(self):
         pass

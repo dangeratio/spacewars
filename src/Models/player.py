@@ -22,8 +22,8 @@ class Player(object):
         self.app = parent.app
         self.name = name
         self.credits = player_credits
-        self.planets = planet_list
-        self.ships = ship_list
+        self.planets = []
+        self.ships = []
         self.enemies = enemies_list
         self.allies = allies_list
         self.new_loc = 0
