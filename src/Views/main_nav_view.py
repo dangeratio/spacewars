@@ -193,7 +193,6 @@ class MainNavView(Frame):
         if self.app.conf.debug == 1:
             print "Drawing planet: [", planet.name, ",", new_x, ",", new_y, ",", planet.loc.size, ",", color, "]"
 
-
     def get_nearest_planet(self, planet):
         planets = self.app.game.player.planets
         distances = {}
@@ -277,7 +276,7 @@ class MainNavView(Frame):
         deltax = x2 - x1
         deltay = y2 - y1
 
-        angle_rad = atan2(deltay,deltax)
+        angle_rad = atan2(deltay, deltax)
         angle_deg = angle_rad*180.0/pi
 
         # return angle_rad
@@ -289,6 +288,14 @@ class MainNavView(Frame):
 
         x1, y1 = p1
         x2, y2 = p2
+
+        self.app.debug(("x1", x1))
+        self.app.debug(("y1", y1))
+        self.app.debug(("x2", x2))
+        self.app.debug(("y2", y2))
+
+        p1width = 5
+        p2width = 5
 
         x3 = 0
         y3 = 0
