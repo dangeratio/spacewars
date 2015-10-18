@@ -13,8 +13,7 @@ from Tkinter import Frame
 from Views.main_nav_view import *
 
 
-
-class MainNavController(Frame):
+class MainNavController(object):
     def __init__(self, parent):
         self.parent = parent
         self.app = self.parent.app

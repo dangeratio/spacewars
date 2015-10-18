@@ -16,7 +16,6 @@ from Controllers.main_controller import *
 from Controllers.intro_controller import *
 
 
-
 class ApplicationController(object):
     def __init__(self):
 
@@ -25,6 +24,9 @@ class ApplicationController(object):
 
         # build main controller to handle main screen requests
         self.main_controller = MainController(self)
+        # self.main_controller.parent = self
+
+        self.game = None
 
     def debug(self, message):
         if self.conf.debug == 1:
@@ -37,9 +39,10 @@ class ApplicationController(object):
     def new_game(self):
         self.game = Game(self)
 
-# replace this function using x in array_of_x if/then statement, python is probably more efficient than I am :)
 
 def add_unique(array, item):
+
+    # replace this function using x in array_of_x if/then statement, python is probably more efficient than I am :)
 
     in_array = False
     for i in array:

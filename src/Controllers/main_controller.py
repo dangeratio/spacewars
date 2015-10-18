@@ -8,7 +8,7 @@
 #         MainNavController
 #         MapNavController
 
-from Tkinter import Frame
+# from Tkinter import Frame
 from Controllers.main_nav_controller import *
 from Controllers.left_nav_controller import *
 from Controllers.map_nav_controller import *
@@ -16,8 +16,7 @@ from Controllers.intro_controller import *
 from Views.main_view import *
 
 
-
-class MainController(object):
+class MainController(Frame):
     def __init__(self, parent):
 
         self.parent = parent
@@ -83,8 +82,7 @@ class MainController(object):
             self.map_nav_controller.message(message)
 
     def remove_this(self):
-        self.frame.destroy()
-
+        self.view.destroy()
 
 '''
     def trigger_display(self, view):
@@ -98,5 +96,3 @@ class MainController(object):
             self.left_nav = LeftNavView()
             # self.map_nav = MapNav()       # not yet implemented
 '''
-
-

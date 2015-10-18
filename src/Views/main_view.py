@@ -1,7 +1,6 @@
 from Tkinter import Tk, Frame
 
 
-
 class MainView(Frame):
     def __init__(self, controller):
 
@@ -11,7 +10,7 @@ class MainView(Frame):
 
         # initial window setup
         self.root = Tk()
-        Frame.__init__(self, self.root, background=self.app.conf.window_background)
+        self.controller.view = Frame.__init__(self, self.root, background=self.app.conf.window_background)
         self.root.title("space")
 
         # window resize event
@@ -23,7 +22,6 @@ class MainView(Frame):
         self.sh = self.winfo_screenheight()
         self.update()
         self.root.geometry('%dx%d+%d+%d' % (self.sw, self.sh, 0, 0))
-
 
     def resize(self, event):
 
@@ -53,4 +51,3 @@ class MainView(Frame):
             self.main_screen.main_nav.build()
 
         '''
-
